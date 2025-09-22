@@ -21,3 +21,5 @@ Thumbs.db
 *.sublime-workspace
 *.sublime-project
 
+
+/src/generated/prisma

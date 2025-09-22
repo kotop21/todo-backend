@@ -17,8 +17,13 @@
     "typescript": "^5.9.2"
   },
   "dependencies": {
+    "@prisma/client": "^6.16.2",
+    "@prisma/extension-accelerate": "^2.0.2",
+    "@types/bcrypt": "^6.0.0",
     "@types/express": "^5.0.3",
+    "bcrypt": "^6.0.0",
     "express": "^5.1.0",
+    "prisma": "^6.16.2",
     "tsx": "^4.20.5"
   }
 }
