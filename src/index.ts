@@ -1,23 +1,21 @@
 import express from "express";
 import { app } from "./app.js";
-import { db } from "./service/users/database/index-database.js"
-
+import { db } from "./service/users/database/index-database.js";
 const port: number = 3000;
+
+
 async function main() {
-
-
   app.listen(port, () => {
-    console.log(`Слухаєм порт: ${port}`);
+    console.log(`Слушаем порт: ${port}`);
   });
 }
 
-
 main()
   .then(async () => {
-    await db.$disconnect()
+    await db.$disconnect();
   })
   .catch(async (e) => {
-    console.error(e)
-    await db.$disconnect()
-    process.exit(1)
-  })
+    console.error(e);
+    await db.$disconnect();
+    process.exit(1);
+  });
