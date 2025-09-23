@@ -2,17 +2,14 @@
   // Visit https://aka.ms/tsconfig to read more about this file
   "compilerOptions": {
     "baseUrl": ".",
-    "paths": {
-      "@static/*": ["static/*"]
-    },
+    "paths": {},
+    
     "rootDir": "./src",
     "outDir": "./dist",
     "typeRoots": ["src/types", "./node_modules/@types"],
-    // Environment Settings
-    // See also https://aka.ms/tsconfig/module
     "module": "nodenext",
     "target": "esnext",
-    "types": ["node"],
+    "types": ["jest", "node"],
     // Other Outputs
     "sourceMap": true,
     "declaration": true,
@@ -32,5 +29,6 @@
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true,
-  }
+  },
+  "exclude": ["jest.config.ts"]
 }

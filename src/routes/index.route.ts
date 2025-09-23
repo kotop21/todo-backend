@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { home } from "../controllers/home.js";
 
-const userRouter: Router = Router();
-userRouter.post("/", home);
+const indexRouter: Router = Router();
+indexRouter.post("/", home);
 
-export default userRouter;
+export default indexRouter;

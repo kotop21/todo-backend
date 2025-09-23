@@ -1,6 +1,6 @@
 import express from "express";
 import { app } from "./app.js";
-import { db } from "./servise/users/database/index-database.js"
+import { db } from "./service/users/database/index-database.js"
 
 const port: number = 3000;
 async function main() {
@@ -13,9 +13,6 @@ async function main() {
 
 
 main()
-  .then(async () => {
-    await db.$disconnect()
-  })
   .catch(async (e) => {
     console.error(e)
     await db.$disconnect()

@@ -1,3 +1,3 @@
-import { register } from "./register.js";
+import { register } from "./user-register.js";
 
 export default { register };
