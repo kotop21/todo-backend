@@ -2,19 +2,32 @@ import type { Request, Response } from 'express';
 import { createUser } from "../../service/users/database/user-register.js";
 import { UserData } from "../../schemas/user-schema.js";
 import { ZodError } from "zod";
+import { createSession } from '../../service/users/database/user-session.js';
 
 export const register = async (req: Request, res: Response) => {
   try {
     const validatedData = UserData.parse(req.body);
     const result = await createUser(validatedData);
+    const session = await createSession(result.userid)
 
-    return res.status(200).json({
+    const maxAge = session.expiresAt.getTime() - Date.now();
+
+    res.cookie("refreshToken", session.refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge,
+    });
+
+    res.status(200).json({
       status: 'success',
       message: result.message,
+      userID: result.userid,
+      timestamp: new Date(),
     });
 
   } catch (err: any) {
-    // Если ошибка валидации через Zod
+
     if (err instanceof ZodError) {
       const errors = err.issues.reduce((acc, curr) => {
         if (curr.path && curr.path[0]) {
@@ -31,18 +44,13 @@ export const register = async (req: Request, res: Response) => {
       });
     }
 
-    // Если это ошибка, которую хотим вернуть как 400
-    if (err.message && err.message.includes('some condition')) {
-      return res.status(400).json({
-        status: 'error',
-        message: err.message,
-      });
-    }
+    const statusCode = err.statusCode || 500;
+    const message = err.message || 'Something went wrong';
 
-    // Все остальные неожиданные ошибки → 500
-    return res.status(500).json({
+    return res.status(statusCode).json({
       status: 'error',
-      message: 'Internal server error',
+      message,
+      timestamp: new Date(),
     });
   }
 };

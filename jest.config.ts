@@ -7,6 +7,7 @@ const config: Config = {
   moduleNameMapper: {
     "^(\\.{1,2}/.*)\\.js$": "$1",
   },
+  verbose: true,           // показує всі тести окремо
 };
 
 export default config;

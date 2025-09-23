@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "start": "tsc && node dist/index.js",
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest"
+    "test": "NODE_OPTIONS='--experimental-vm-modules --no-warnings' jest"
+
   },
   "type": "module",
   "keywords": [],
@@ -29,7 +30,6 @@
     "@prisma/client": "^6.16.2",
     "@prisma/extension-accelerate": "^2.0.2",
     "@types/bcrypt": "^6.0.0",
-    "bcrypt": "^6.0.0",
     "express": "^5.1.0",
     "prisma": "^6.16.2",
     "swagger-ui-express": "^5.0.1",

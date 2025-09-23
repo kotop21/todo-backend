@@ -20,6 +20,8 @@ export const createUser = async (data: UserData) => {
 
     return {
       message: "User register",
+      userid: newUser.id,
+      regDate: newUser.regDate,
     };
 
   } catch (err: any) {

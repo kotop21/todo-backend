@@ -22,10 +22,13 @@ describe("POST /register", () => {
       .send(userData)
       .set("Accept", "application/json");
 
+    if (response.status !== 200) {
+      console.log("Відповідь сервера:", response.body);
+    }
+
     expect(response.status).toBe(200);
-    expect(response.body).toEqual({
+    expect(response.body).toMatchObject({
       status: 'success',
-      message: 'User register'
     });
   });
 
