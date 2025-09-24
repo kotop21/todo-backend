@@ -1,4 +1,4 @@
-import { hashPassword, verifyPassword } from '../service/users/crypt-password.js';
+import { hashPassword, verifyPassword } from '../src/service/users/crypt-password.js';
 
 describe('Хешування та перевірка паролів', () => {
   const password = 'SuperSecret123!';

@@ -1,9 +1,9 @@
 import { db } from "./index-database.js";
 
-export const searchUser = async (name: string) => {
+export const searchEmail = async (email: string) => {
   return db.user.findFirst({
     where: {
-      name: name,
+      email: email,
     },
   });
 };

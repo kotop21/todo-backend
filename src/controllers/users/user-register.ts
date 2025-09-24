@@ -1,12 +1,12 @@
 import type { Request, Response } from 'express';
 import { createUser } from "../../service/users/database/user-register.js";
-import { UserData } from "../../schemas/user-schema.js";
+import { RegisterUserDto } from "../../schemas/user-schema.js";
 import { ZodError } from "zod";
 import { createSession } from '../../service/users/database/user-session.js';
 
 export const register = async (req: Request, res: Response) => {
   try {
-    const validatedData = UserData.parse(req.body);
+    const validatedData = RegisterUserDto.parse(req.body);
     const result = await createUser(validatedData);
     const session = await createSession(result.userid)
 
@@ -19,7 +19,7 @@ export const register = async (req: Request, res: Response) => {
       maxAge,
     });
 
-    res.status(200).json({
+    res.status(201).json({
       status: 'success',
       message: result.message,
       userID: result.userid,
@@ -45,7 +45,7 @@ export const register = async (req: Request, res: Response) => {
     }
 
     const statusCode = err.statusCode || 500;
-    const message = err.message || 'Something went wrong';
+    const message = err.message || 'Internal Server Error';
 
     return res.status(statusCode).json({
       status: 'error',

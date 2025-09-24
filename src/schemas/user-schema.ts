@@ -1,12 +1,8 @@
 // user-schema.ts
 import { z } from "zod";
 
-export const UserData = z.object({
-  userid: z
-    .number().optional(),
-  name: z
-    .string()
-    .min(1, { message: "Name is required" }),
+export const RegisterUserDto = z.object({
+  email: z.email({ message: "Invalid email address" }),
   password: z
     .string()
     .min(1, { message: "Password is required" })
@@ -14,5 +10,4 @@ export const UserData = z.object({
     .regex(/[^A-Za-z0-9]/, { message: "Password must contain at least one special character" }),
 });
 
-
-export type UserData = z.infer<typeof UserData>;
+export type RegisterUserDto = z.infer<typeof RegisterUserDto>;
