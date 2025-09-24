@@ -1,6 +1,6 @@
 import request from "supertest";
 import { app } from "../src/app.js";
-import { db } from "../src/service/users/database/index-database.js";
+import { db } from "../src/service/user/database/index-database.js";
 
 // if (response.status !== 201) {
 //   console.log(response.body);
@@ -26,6 +26,9 @@ describe("POST /register", () => {
       .post("/register")
       .send(userData)
       .set("Accept", "application/json");
+    if (response.status !== 201) {
+      console.log(response.body);
+    }
 
     expect(response.status).toBe(201);
     expect(response.body).toMatchObject({
@@ -43,7 +46,9 @@ describe("POST /register", () => {
       .post("/register")
       .send(userData)
       .set("Accept", "application/json");
-
+    if (response.status !== 409) {
+      console.log(response.body);
+    }
     expect(response.status).toBe(409);
     expect(response.body).toMatchObject({
       status: 'error',

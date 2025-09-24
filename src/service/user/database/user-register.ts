@@ -1,24 +1,24 @@
 import { db } from "./index-database.js";
 import { hashPassword } from "../crypt-password.js";
 import { RegisterUserDto } from "../../../schemas/user-schema.js";
-import { searchEmail } from "./user-search.js";
+import { regSearchUserByEmail } from "./user-search.js";
 import { createRefreshToken } from "./user-refresh-token.js";
 
-export const createUser = async (data: RegisterUserDto) => {
+export const createUser = async (dataIn: RegisterUserDto) => {
   try {
     const refreshToken = await createRefreshToken()
-    const existingEmail = await searchEmail(data.email);
+    const existingEmail = await regSearchUserByEmail(dataIn.email);
     if (existingEmail) {
       const error: any = new Error("Email already exists");
       error.statusCode = 409;
       throw error;
     }
 
-    const hashedPassword = await hashPassword(data.password);
+    const hashedPassword = await hashPassword(dataIn.password);
 
     const newUser = await db.user.create({
       data: {
-        email: data.email,
+        email: dataIn.email,
         password: hashedPassword,
         regDate: new Date(),
         refreshToken: refreshToken.hashedToken,

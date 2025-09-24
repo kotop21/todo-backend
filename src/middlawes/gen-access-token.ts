@@ -11,7 +11,7 @@ export const generateAccessToken = (data: AccessTokenData) => {
     throw new Error("ACCESS_TOKEN_SECRET is not defined in env");
   }
 
-  // Время жизни токена, например, 15 минут
+  // Время жизни AccessToken
   const expiresIn = '15m';
 
   const token = jwt.sign(data, process.env.ACCESS_TOKEN_SECRET, {

@@ -1,6 +1,6 @@
 import express from "express";
 import { app } from "./app.js";
-import { db } from "./service/users/database/index-database.js";
+import { db } from "./service/user/database/index-database.js";
 const port: number = 3000;
 
 

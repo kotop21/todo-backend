@@ -3,17 +3,17 @@ import { promisify } from 'util';
 
 const scrypt = promisify(_scrypt);
 
-export const hashPassword = async (password: string) => {
+export const hashPassword = async (passwordIn: string) => {
   const salt = randomBytes(16).toString('hex');
-  const derivedKey = (await scrypt(password, salt, 64)) as Buffer;
+  const derivedKey = (await scrypt(passwordIn, salt, 64)) as Buffer;
   return `${salt}:${derivedKey.toString('hex')}`;
 };
 
-export const verifyPassword = async (password: string, hashed: string) => {
+export const verifyPassword = async (passwordIn: string, hashed: string) => {
   const [salt, key] = hashed.split(':');
   if (!salt || !key) throw new Error('Invalid hashed password format');
 
-  const derivedKey = (await scrypt(password, salt, 64)) as Buffer;
+  const derivedKey = (await scrypt(passwordIn, salt, 64)) as Buffer;
   return derivedKey.toString('hex') === key;
 };
 
