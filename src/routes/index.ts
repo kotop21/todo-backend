@@ -1,4 +1,4 @@
-import indexRouter from "./index.route.js";
+import indexRouter from "./root.route.js";
 import userRouter from "./user.route.js";
 
 export default {

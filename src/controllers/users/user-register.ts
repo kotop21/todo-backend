@@ -2,22 +2,37 @@ import type { Request, Response } from 'express';
 import { createUser } from "../../service/users/database/user-register.js";
 import { RegisterUserDto } from "../../schemas/user-schema.js";
 import { ZodError } from "zod";
-import { createSession } from '../../service/users/database/user-session.js';
+import { generateAccessToken } from '../../middlawes/generateAccessToken.js'; // импортируем middleware
 
 export const register = async (req: Request, res: Response) => {
   try {
     const validatedData = RegisterUserDto.parse(req.body);
     const result = await createUser(validatedData);
-    const session = await createSession(result.userid)
 
-    const maxAge = session.expiresAt.getTime() - Date.now();
+    const maxAgeRefresh = result.refreshTokenExpiresAt.getTime() - Date.now();
 
-    res.cookie("refreshToken", session.refreshToken, {
+    res.cookie("refreshToken", result.refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
-      maxAge,
+      maxAge: maxAgeRefresh,
     });
+
+    const accessToken = generateAccessToken({
+      userID: result.userid,
+      email: validatedData.email,
+      createdAt: result.regDate.toISOString(),
+    });
+
+    const accessTokenMaxAge = 15 * 60 * 1000;
+
+    res.cookie("accessToken", accessToken.token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: accessTokenMaxAge,
+    });
+
 
     res.status(201).json({
       status: 'success',
@@ -27,7 +42,6 @@ export const register = async (req: Request, res: Response) => {
     });
 
   } catch (err: any) {
-
     if (err instanceof ZodError) {
       const errors = err.issues.reduce((acc, curr) => {
         if (curr.path && curr.path[0]) {
@@ -39,7 +53,7 @@ export const register = async (req: Request, res: Response) => {
       return res.status(400).json({
         status: 'error',
         message: 'Validation failed',
-        errors: errors,
+        errors,
         timestamp: new Date(),
       });
     }

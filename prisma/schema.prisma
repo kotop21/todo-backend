@@ -15,14 +15,15 @@ datasource db {
 }
 
 model User {
-  id       Int      @id @default(autoincrement())
-  email    String   @unique
-  password String
-  regDate  DateTime @default(now())
+  id                    Int      @id @default(autoincrement())
+  email                 String   @unique
+  password              String
+  regDate               DateTime @default(now())
+  refreshToken          String
+  refreshTokenExpiresAt DateTime
 
   columns   Column[]
   todoItems TodoItem[]
-  Session   Session[]
 }
 
 model Column {
@@ -44,14 +45,4 @@ model TodoItem {
 
   column Column @relation(fields: [columnId], references: [id], onDelete: Cascade)
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-model Session {
-  id           Int      @id @default(autoincrement())
-  userId       Int
-  refreshToken String   @unique
-  createdAt    DateTime @default(now())
-  expiresAt    DateTime
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
