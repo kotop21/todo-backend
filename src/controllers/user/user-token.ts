@@ -50,7 +50,7 @@ export const getToken = async (req: Request, res: Response) => {
 
     res.status(201).json({
       status: 'success',
-      message: result.message,
+      message: "Successful token creation",
       userID: search.id,
       timestamp: new Date(),
     });

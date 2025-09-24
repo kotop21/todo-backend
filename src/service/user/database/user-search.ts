@@ -31,8 +31,9 @@ export const searchUserByEmail = async (email: string) => {
   }
 
   return {
-    message: "User found",
     userid: user.id,
+    email: user.email,
+    password: user.password,
     regDate: user.regDate,
     refreshToken: user.refreshToken,
     refreshTokenExpiresAt: user.refreshTokenExpiresAt,
@@ -57,7 +58,6 @@ export const searchUserById = async (id: number) => {
   }
 
   return {
-    message: "User found",
     email: user.email,
     regDate: user.regDate,
     refreshToken: user.refreshToken,
