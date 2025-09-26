@@ -8,6 +8,6 @@ export const getTableByUserId = async (userId: number) => {
   }
 
   return await db.table.findMany({
-    where: { userId },
+    where: { userId: userId },
   });
 };

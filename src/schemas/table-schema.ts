@@ -17,5 +17,13 @@ export const DeleteTableDto = z.object({
     .min(1, { message: "Table id is required" })
 });
 
+export const GetTableDto = z.object({
+  tableId: z
+    .number({ message: "Invalid table id" })
+    .min(1, { message: "Table id is required" })
+});
+
+
 export type CreateTableDto = z.infer<typeof CreateTableDto>;
 export type DeleteTableDto = z.infer<typeof DeleteTableDto>;
+export type GetTableDto = z.infer<typeof GetTableDto>;

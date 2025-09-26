@@ -2,21 +2,10 @@ import type { Request, Response } from 'express';
 import { deleteTableById } from '../../service/table/delete-table.js';
 import { DeleteTableDto } from '../../schemas/table-schema.js';
 import { ZodError } from 'zod';
-import jwt from 'jsonwebtoken';
 
 export const deleteTable = async (req: Request, res: Response) => {
   try {
     const validatedData = DeleteTableDto.parse(req.body);
-    let payload: any;
-    try {
-      payload = jwt.verify(req.cookies?.accessToken || '', process.env.ACCESS_TOKEN_SECRET!);
-    } catch {
-      return res.status(401).json({
-        status: 'error',
-        message: 'Invalid or missing access token',
-        timestamp: new Date(),
-      });
-    }
 
     const result = await deleteTableById(validatedData.tableId)
 

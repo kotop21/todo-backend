@@ -1,5 +1,4 @@
 import type { Request, Response } from 'express';
-import jwt from 'jsonwebtoken';
 import { addTable } from '../../service/table/add-table.js';
 import { CreateTableDto } from '../../schemas/table-schema.js';
 import { ZodError } from 'zod';
