@@ -4,10 +4,10 @@ import { RegisterUserDto } from "../../schemas/user-schema.js";
 import { ZodError } from "zod";
 import { generateAccessToken } from '../../service/gen-access-token.js';
 
-export const register = async (req: Request, res: Response) => {
+export const userRegisterCon = async (req: Request, res: Response) => {
   try {
-    const validatedData = RegisterUserDto.parse(req.body);
-    const result = await createUser(validatedData);
+    const validData = RegisterUserDto.parse(req.body);
+    const result = await createUser(validData);
 
     const maxAgeRefresh = result.refreshTokenExpiresAt.getTime() - Date.now();
 
@@ -20,7 +20,7 @@ export const register = async (req: Request, res: Response) => {
 
     const accessToken = generateAccessToken({
       userID: result.userid,
-      email: validatedData.email,
+      email: validData.email,
       createdAt: result.regDate.toISOString(),
     });
 

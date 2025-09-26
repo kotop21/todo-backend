@@ -1,17 +1,17 @@
 import type { Request, Response } from 'express';
-import { deleteItem } from '../../service/item/delete-item.js';
-import { DeleteItemDto } from '../../schemas/item-schema.js';
+import { editTable } from '../../service/table/edit-table.js';
+import { EditTableDto } from '../../schemas/table-schema.js';
 import { ZodError } from 'zod';
 
-export const deleteItemCon = async (req: Request, res: Response) => {
+export const editTableCon = async (req: Request, res: Response) => {
   try {
-    const validData = DeleteItemDto.parse(req.body);
+    const validData = EditTableDto.parse(req.body);
 
-    const result = await deleteItem(validData.itemId)
+    const result = await editTable(validData.tableId, validData.tableName);
 
     res.status(201).json({
       status: 'success',
-      message: `Item ${result.name} has been deleted`,
+      message: 'Table updated',
       tableName: result.name,
       timestamp: new Date(),
     });

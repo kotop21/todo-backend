@@ -25,7 +25,6 @@ export const createUser = async (dataIn: RegisterUserDto) => {
         refreshTokenExpiresAt: refreshToken.refreshTokenExpiresAt,
       },
     });
-
     return {
       message: "User register",
       userid: newUser.id,

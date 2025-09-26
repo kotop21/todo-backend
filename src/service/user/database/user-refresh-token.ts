@@ -1,7 +1,23 @@
 import { db } from "../../index-database.js";
 import crypto from "crypto";
 
-export const createRefreshToken = async (userIdIn?: number) => {
+export const createRefreshToken = async () => {
+  try {
+    const refreshToken = crypto.randomBytes(32).toString("hex");
+    const hashedToken = crypto.createHash('sha256').update(refreshToken).digest('hex');
+    const refreshTokenExpiresAt = new Date(new Date().setDate(new Date().getDate() + 30));
+
+    return {
+      refreshToken: refreshToken,
+      hashedToken: hashedToken,
+      refreshTokenExpiresAt: refreshTokenExpiresAt,
+    };
+  } catch (err: any) {
+    throw err;
+  }
+};
+
+export const updateRefreshToken = async (userIdIn?: number) => {
   try {
     const refreshToken = crypto.randomBytes(32).toString("hex");
     const hashedToken = crypto.createHash('sha256').update(refreshToken).digest('hex');

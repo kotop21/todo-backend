@@ -1,5 +1,5 @@
-import { register } from "./user-register.js";
-import { getToken } from "./user-token.js";
-import { login } from "./user-login.js"
+import { userRegisterCon } from "./user-register.js";
+import { userGetTokenCon } from "./user-token.js";
+import { userLoginCon } from "./user-login.js";
 
-export default { register, getToken, login };
+export default { userRegisterCon, userGetTokenCon, userLoginCon };

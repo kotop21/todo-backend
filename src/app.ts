@@ -21,7 +21,6 @@ app.use(cookieParser())
 app.use(express.json());
 
 app.use(router.rootRouter);
-
 app.use("/user", router.userRouter);
-
 app.use("/table", router.tableRouter);
+app.use("/item", router.itemRouter);

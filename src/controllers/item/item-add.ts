@@ -1,18 +1,27 @@
 import type { Request, Response } from 'express';
-import { deleteItem } from '../../service/item/delete-item.js';
-import { DeleteItemDto } from '../../schemas/item-schema.js';
+import { addItem } from '../../service/item/add-item.js';
+import { AddItemDto } from '../../schemas/item-schema.js';
 import { ZodError } from 'zod';
 
-export const deleteItemCon = async (req: Request, res: Response) => {
+export const addItemCon = async (req: Request, res: Response) => {
   try {
-    const validData = DeleteItemDto.parse(req.body);
+    const validData = AddItemDto.parse(req.body);
+    const userId = req.user?.userID;
+    if (!userId) {
+      return res.status(401).json({
+        status: 'error',
+        message: 'User not authenticated',
+        timestamp: new Date(),
+      });
+    }
 
-    const result = await deleteItem(validData.itemId)
+    const result =
+      await addItem(validData.itemName, validData.tableId, userId);
 
     res.status(201).json({
       status: 'success',
-      message: `Item ${result.name} has been deleted`,
-      tableName: result.name,
+      message: 'Item created',
+      tableName: result.itemName,
       timestamp: new Date(),
     });
 

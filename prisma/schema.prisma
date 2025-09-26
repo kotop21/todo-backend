@@ -22,7 +22,7 @@ model User {
   refreshToken          String
   refreshTokenExpiresAt DateTime
 
-  columns   Table[]
+  table     Table[]
   todoItems TableItem[]
 }
 
@@ -37,12 +37,12 @@ model Table {
 
 model TableItem {
   id          Int      @id @default(autoincrement())
-  columnId    Int
+  tableId     Int
   userId      Int
   itemName    String
   itemDescrip String?
   itemDate    DateTime @default(now())
 
-  column Table @relation(fields: [columnId], references: [id], onDelete: Cascade)
-  user   User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  table Table @relation(fields: [tableId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

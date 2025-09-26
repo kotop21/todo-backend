@@ -1,8 +1,8 @@
 import type { Request, Response } from 'express';
 import { ZodError } from 'zod';
-import { getTableByUserId } from '../../service/table/get-table.js';
+import { getTableByUserId } from '../../service/table/get-tables.js';
 
-export const getTables = async (req: Request, res: Response) => {
+export const getTablesCon = async (req: Request, res: Response) => {
   try {
     const userId = req.user?.userID;
     if (!userId) {

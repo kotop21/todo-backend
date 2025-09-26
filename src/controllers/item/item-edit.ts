@@ -1,26 +1,18 @@
 import type { Request, Response } from 'express';
-import { addTable } from '../../service/table/add-table.js';
-import { CreateTableDto } from '../../schemas/table-schema.js';
+import { editItem } from '../../service/item/edit-item.js';
+import { EditItemDto } from '../../schemas/item-schema.js';
 import { ZodError } from 'zod';
 
-export const createTable = async (req: Request, res: Response) => {
+export const editItemCon = async (req: Request, res: Response) => {
   try {
-    const validatedData = CreateTableDto.parse(req.body);
-    const userId = req.user?.userID;
-    if (!userId) {
-      return res.status(401).json({
-        status: 'error',
-        message: 'User not authenticated',
-        timestamp: new Date(),
-      });
-    }
-    const result = await addTable(validatedData.name, userId);
+    const validData = EditItemDto.parse(req.body);
 
+    const result = await editItem(validData.itemId, validData.itemName);
 
     res.status(201).json({
       status: 'success',
-      message: 'Table created',
-      tableName: result.name,
+      message: 'Item updated',
+      tableName: result.itemName,
       timestamp: new Date(),
     });
 

@@ -10,8 +10,8 @@ export const addTable = async (nameTable: string, userId: number) => {
     });
 
     return {
-      message: "Table created successfully",
       name: newTable.name,
+      tableId: newTable.id,
     };
 
   } catch (err: any) {

@@ -1,13 +1,13 @@
 import type { Request, Response } from 'express';
-import { deleteTableById } from '../../service/table/delete-table.js';
+import { deleteTable } from '../../service/table/delete-table.js';
 import { DeleteTableDto } from '../../schemas/table-schema.js';
 import { ZodError } from 'zod';
 
-export const deleteTable = async (req: Request, res: Response) => {
+export const deleteTableCon = async (req: Request, res: Response) => {
   try {
-    const validatedData = DeleteTableDto.parse(req.body);
+    const validData = DeleteTableDto.parse(req.body);
 
-    const result = await deleteTableById(validatedData.tableId)
+    const result = await deleteTable(validData.tableId)
 
     res.status(201).json({
       status: 'success',

@@ -6,18 +6,18 @@ import { LoginUserDto } from "../../schemas/user-schema.js";
 import { verifyPassword } from '../../service/user/crypt-password.js';
 import { ZodError } from 'zod';
 
-export const login = async (req: Request, res: Response) => {
+export const userLoginCon = async (req: Request, res: Response) => {
   try {
-    const validatedData = LoginUserDto.parse(req.body);
+    const validData = LoginUserDto.parse(req.body);
 
-    const userData = await searchUserByEmail(validatedData.email);
-    const verifPassword = await verifyPassword(validatedData.password, userData.password)
+    const userData = await searchUserByEmail(validData.email);
+    const verifPassword = await verifyPassword(validData.password, userData.password)
     if (!verifPassword) {
       const error: any = new Error("Password dont correct");
       error.statusCode = 401;
       throw error;
     }
-    const refreshToken = await createRefreshToken(userData.userid);
+    const refreshToken = await createRefreshToken();
 
     const maxAgeRefresh = refreshToken.refreshTokenExpiresAt.getTime() - Date.now();
 
