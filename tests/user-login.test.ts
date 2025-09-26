@@ -9,7 +9,6 @@ describe("POST /login", () => {
   };
 
   beforeAll(async () => {
-    // создаём тестового пользователя
     await request(app)
       .post("/register")
       .send(testUser)
@@ -17,7 +16,6 @@ describe("POST /login", () => {
   });
 
   afterAll(async () => {
-    // удаляем тестового пользователя
     await db.user.deleteMany({
       where: {
         email: testUser.email
@@ -37,7 +35,6 @@ describe("POST /login", () => {
     expect(response.body).toHaveProperty("userID");
     expect(response.body).toHaveProperty("timestamp");
 
-    // проверяем что установлены куки
     const cookies = response.headers["set-cookie"];
     expect(cookies).toEqual(
       expect.arrayContaining([
