@@ -34,6 +34,13 @@ describe("POST /register", () => {
     expect(response.body).toMatchObject({
       status: 'success',
     });
+    const cookies = response.headers["set-cookie"];
+    expect(cookies).toEqual(
+      expect.arrayContaining([
+        expect.stringContaining("refreshToken="),
+        expect.stringContaining("accessToken="),
+      ])
+    );
   });
 
   it("Тест зареєстрованного користувача", async () => {
