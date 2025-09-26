@@ -1,6 +1,6 @@
 import request from "supertest";
 import { app } from "../src/app.js";
-import { db } from "../src/service/user/database/index-database.js";
+import { db } from "../src/service/index-database.js";
 
 // if (response.status !== 201) {
 //   console.log(response.body);
@@ -23,7 +23,7 @@ describe("POST /register", () => {
     };
 
     const response = await request(app)
-      .post("/register")
+      .post("/user/register")
       .send(userData)
       .set("Accept", "application/json");
     if (response.status !== 201) {
@@ -50,7 +50,7 @@ describe("POST /register", () => {
     };
 
     const response = await request(app)
-      .post("/register")
+      .post("/user/register")
       .send(userData)
       .set("Accept", "application/json");
     if (response.status !== 409) {
@@ -68,7 +68,7 @@ describe("POST /register", () => {
     };
 
     const response = await request(app)
-      .post("/register")
+      .post("/user/register")
       .send(invalidData)
       .set("Accept", "application/json");
 

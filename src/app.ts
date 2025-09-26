@@ -19,5 +19,9 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument, swaggerOp
 
 app.use(cookieParser())
 app.use(express.json());
-app.use(router.index);
-app.use(router.user);
+
+app.use(router.rootRouter);
+
+app.use("/user", router.userRouter);
+
+app.use("/table", router.tableRouter);

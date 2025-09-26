@@ -2,7 +2,7 @@ import type { Request, Response } from 'express';
 import { createUser } from "../../service/user/database/user-register.js";
 import { RegisterUserDto } from "../../schemas/user-schema.js";
 import { ZodError } from "zod";
-import { generateAccessToken } from '../../middlawes/gen-access-token.js';
+import { generateAccessToken } from '../../service/gen-access-token.js';
 
 export const register = async (req: Request, res: Response) => {
   try {

@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express';
 import { searchRefreshToken, searchUserById } from '../../service/user/database/user-search.js';
 import { createRefreshToken } from '../../service/user/database/user-refresh-token.js';
-import { generateAccessToken } from '../../middlawes/gen-access-token.js';
+import { generateAccessToken } from '../../service/gen-access-token.js';
 
 export const getToken = async (req: Request, res: Response) => {
   try {

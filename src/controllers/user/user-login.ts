@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express';
 import { searchUserByEmail } from '../../service/user/database/user-search.js';
 import { createRefreshToken } from '../../service/user/database/user-refresh-token.js';
-import { generateAccessToken } from '../../middlawes/gen-access-token.js';
+import { generateAccessToken } from '../../service/gen-access-token.js';
 import { LoginUserDto } from "../../schemas/user-schema.js";
 import { verifyPassword } from '../../service/user/crypt-password.js';
 import { ZodError } from 'zod';

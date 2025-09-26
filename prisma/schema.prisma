@@ -22,27 +22,27 @@ model User {
   refreshToken          String
   refreshTokenExpiresAt DateTime
 
-  columns   Column[]
-  todoItems TodoItem[]
+  columns   Table[]
+  todoItems TableItem[]
 }
 
-model Column {
+model Table {
   id     Int    @id @default(autoincrement())
   userId Int
   name   String
 
-  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  todoItems TodoItem[]
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  todoItems TableItem[]
 }
 
-model TodoItem {
+model TableItem {
   id          Int      @id @default(autoincrement())
   columnId    Int
   userId      Int
-  itemText    String
+  itemName    String
   itemDescrip String?
   itemDate    DateTime @default(now())
 
-  column Column @relation(fields: [columnId], references: [id], onDelete: Cascade)
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  column Table @relation(fields: [columnId], references: [id], onDelete: Cascade)
+  user   User  @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

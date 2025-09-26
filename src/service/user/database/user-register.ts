@@ -1,4 +1,4 @@
-import { db } from "./index-database.js";
+import { db } from "../../index-database.js";
 import { hashPassword } from "../crypt-password.js";
 import { RegisterUserDto } from "../../../schemas/user-schema.js";
 import { regSearchUserByEmail } from "./user-search.js";

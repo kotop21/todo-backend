@@ -1,6 +1,6 @@
 import request from "supertest";
 import { app } from "../src/app.js";
-import { db } from "../src/service/user/database/index-database.js";
+import { db } from "../src/service/index-database.js";
 
 describe("POST /login", () => {
   const testUser = {
@@ -10,7 +10,7 @@ describe("POST /login", () => {
 
   beforeAll(async () => {
     await request(app)
-      .post("/register")
+      .post("/user/register")
       .send(testUser)
       .set("Accept", "application/json");
   });
@@ -26,7 +26,7 @@ describe("POST /login", () => {
 
   it("Успешная авторизация с правильными данными", async () => {
     const response = await request(app)
-      .post("/login")
+      .post("/user/login")
       .send(testUser)
       .set("Accept", "application/json");
 
@@ -46,7 +46,7 @@ describe("POST /login", () => {
 
   it("Авторизация с неправильным паролем", async () => {
     const response = await request(app)
-      .post("/login")
+      .post("/user/login")
       .send({
         email: testUser.email,
         password: "wrongPassword"
@@ -61,7 +61,7 @@ describe("POST /login", () => {
 
   it("Авторизация без обязательных полей (валидация)", async () => {
     const response = await request(app)
-      .post("/login")
+      .post("/user/login")
       .send({ email: "", password: "" })
       .set("Accept", "application/json");
 
@@ -75,7 +75,7 @@ describe("POST /login", () => {
 
   it("Авторизация несуществующего пользователя", async () => {
     const response = await request(app)
-      .post("/login")
+      .post("/user/login")
       .send({
         email: "nouser@example.com",
         password: "somePassword123!"

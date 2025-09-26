@@ -1,4 +1,4 @@
-import { db } from "./index-database.js";
+import { db } from "../../index-database.js";
 import crypto from "crypto";
 
 export const regSearchUserByEmail = async (email: string) => {
