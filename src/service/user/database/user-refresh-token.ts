@@ -2,19 +2,15 @@ import { db } from "../../index-database.js";
 import crypto from "crypto";
 
 export const createRefreshToken = async () => {
-  try {
-    const refreshToken = crypto.randomBytes(32).toString("hex");
-    const hashedToken = crypto.createHash('sha256').update(refreshToken).digest('hex');
-    const refreshTokenExpiresAt = new Date(new Date().setDate(new Date().getDate() + 30));
+  const refreshToken = crypto.randomBytes(32).toString("hex");
+  const hashedToken = crypto.createHash('sha256').update(refreshToken).digest('hex');
+  const refreshTokenExpiresAt = new Date(new Date().setDate(new Date().getDate() + 30));
 
-    return {
-      refreshToken: refreshToken,
-      hashedToken: hashedToken,
-      refreshTokenExpiresAt: refreshTokenExpiresAt,
-    };
-  } catch (err: any) {
-    throw err;
-  }
+  return {
+    refreshToken: refreshToken,
+    hashedToken: hashedToken,
+    refreshTokenExpiresAt: refreshTokenExpiresAt,
+  };
 };
 
 export const updateRefreshToken = async (userIdIn?: number) => {
@@ -40,15 +36,14 @@ export const updateRefreshToken = async (userIdIn?: number) => {
       refreshTokenExpiresAt: refreshTokenExpiresAt,
     };
   } catch (err: any) {
-    throw err;
+    console.error("Error update User Reftesh Token:", err);
+    const error: any = new Error("Failed to update User Reftesh Token");
+    error.statusCode = 400;
+    throw error;
   }
 };
 
 export const verifyRefreshToken = (refreshToken: string, hashedToken: string): boolean => {
-  try {
-    const hashedInput = crypto.createHash("sha256").update(refreshToken).digest("hex");
-    return hashedInput === hashedToken;
-  } catch (err: any) {
-    throw err;
-  }
-};
+  const hashedInput = crypto.createHash("sha256").update(refreshToken).digest("hex");
+  return hashedInput === hashedToken;
+}

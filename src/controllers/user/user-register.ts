@@ -7,7 +7,7 @@ import { generateAccessToken } from '../../service/gen-access-token.js';
 export const userRegisterCon = async (req: Request, res: Response) => {
   try {
     const validData = RegisterUserDto.parse(req.body);
-    const result = await createUser(validData);
+    const result = await createUser(validData.email);
 
     const maxAgeRefresh = result.refreshTokenExpiresAt.getTime() - Date.now();
 

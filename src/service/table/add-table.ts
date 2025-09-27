@@ -1,6 +1,11 @@
 import { db } from "../index-database.js";
 
 export const addTable = async (nameTable: string, userId: number) => {
+  if (!nameTable || !userId) {
+    const error: any = new Error("Table name and User id is required");
+    error.statusCode = 400;
+    throw error;
+  }
   try {
     const newTable = await db.table.create({
       data: {
@@ -15,6 +20,9 @@ export const addTable = async (nameTable: string, userId: number) => {
     };
 
   } catch (err: any) {
-    throw err;
+    console.error("Error add Table:", err);
+    const error: any = new Error("Failed to add Table");
+    error.statusCode = 400;
+    throw error;
   }
 };

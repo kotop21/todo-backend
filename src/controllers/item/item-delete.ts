@@ -11,8 +11,8 @@ export const deleteItemCon = async (req: Request, res: Response) => {
 
     res.status(201).json({
       status: 'success',
-      message: `Item ${result.name} has been deleted`,
-      tableName: result.name,
+      message: `Item ${result.itemName} has been deleted`,
+      tableName: result.itemName,
       timestamp: new Date(),
     });
 

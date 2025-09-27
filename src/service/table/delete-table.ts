@@ -6,18 +6,18 @@ export const deleteTable = async (tableId: number) => {
     error.statusCode = 400;
     throw error;
   }
+  try {
+    const table = await db.table.findUnique({
+      where: { id: tableId },
+    });
 
-  const table = await db.table.findUnique({
-    where: { id: tableId },
-  });
-
-  if (!table) {
-    const error: any = new Error(`Table with id ${tableId} not found`);
-    error.statusCode = 404;
+    return await db.table.delete({
+      where: { id: tableId },
+    });
+  } catch (err) {
+    console.error("Error delete Table:", err);
+    const error: any = new Error("Failed to delete Table");
+    error.statusCode = 400;
     throw error;
   }
-
-  return await db.table.delete({
-    where: { id: tableId },
-  });
-};
+}

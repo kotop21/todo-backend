@@ -1,24 +1,28 @@
 import { db } from "../../index-database.js";
 import { hashPassword } from "../crypt-password.js";
-import { RegisterUserDto } from "../../../schemas/user-schema.js";
 import { regSearchUserByEmail } from "./user-search.js";
 import { createRefreshToken } from "./user-refresh-token.js";
 
-export const createUser = async (dataIn: RegisterUserDto) => {
+export const createUser = async (userEmail: string) => {
+  if (!userEmail) {
+    const error: any = new Error("Email is required.");
+    error.statusCode = 400;
+    throw error;
+  }
   try {
     const refreshToken = await createRefreshToken()
-    const existingEmail = await regSearchUserByEmail(dataIn.email);
+    const existingEmail = await regSearchUserByEmail(userEmail);
     if (existingEmail) {
       const error: any = new Error("Email already exists");
       error.statusCode = 409;
       throw error;
     }
 
-    const hashedPassword = await hashPassword(dataIn.password);
+    const hashedPassword = await hashPassword(userEmail);
 
     const newUser = await db.user.create({
       data: {
-        email: dataIn.email,
+        email: userEmail,
         password: hashedPassword,
         regDate: new Date(),
         refreshToken: refreshToken.hashedToken,
@@ -34,6 +38,7 @@ export const createUser = async (dataIn: RegisterUserDto) => {
     };
 
   } catch (err: any) {
+    console.error("Error create User:", err);
     throw err;
   }
 };
