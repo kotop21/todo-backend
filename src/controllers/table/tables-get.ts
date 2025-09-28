@@ -3,48 +3,21 @@ import { ZodError } from 'zod';
 import { getTableByUserId } from '../../service/table/get-tables.js';
 
 export const getTablesCon = async (req: Request, res: Response) => {
-  try {
-    const userId = req.user?.userID;
-    if (!userId) {
-      return res.status(401).json({
-        status: 'error',
-        message: 'User not authenticated',
-        timestamp: new Date(),
-      });
-    }
-    const result = await getTableByUserId(userId)
-
-    res.status(201).json({
-      status: 'success',
-      message: 'Tables retrieved successfully',
-      count: result.length,
-      timestamp: new Date(),
-      result
-    });
-
-  } catch (err: any) {
-    if (err instanceof ZodError) {
-      const errors = err.issues.reduce((acc, curr) => {
-        if (curr.path && curr.path[0]) {
-          acc[curr.path[0] as string] = curr.message;
-        }
-        return acc;
-      }, {} as Record<string, string>);
-
-      return res.status(400).json({
-        status: 'error',
-        message: 'Validation failed',
-        errors,
-        timestamp: new Date(),
-      });
-    }
-
-    const statusCode = err.statusCode || 500;
-    const message = err.message || 'Internal Server Error';
-    return res.status(statusCode).json({
+  const userId = req.user?.userID;
+  if (!userId) {
+    return res.status(401).json({
       status: 'error',
-      message,
+      message: 'User not authenticated',
       timestamp: new Date(),
     });
   }
+  const result = await getTableByUserId(userId)
+
+  res.status(201).json({
+    status: 'success',
+    message: 'Tables retrieved successfully',
+    count: result.length,
+    timestamp: new Date(),
+    result
+  });
 };

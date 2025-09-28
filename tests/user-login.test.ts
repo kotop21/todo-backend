@@ -4,7 +4,7 @@ import { db } from "../src/service/index-database.js";
 
 describe("POST /login", () => {
   const testUser = {
-    email: "test@gmail.com",
+    email: "testUser@gmail.com",
     password: "testPassword123!"
   };
 
@@ -29,7 +29,9 @@ describe("POST /login", () => {
       .post("/user/login")
       .send(testUser)
       .set("Accept", "application/json");
-
+    if (response.status !== 201) {
+      console.log(response.body);
+    }
     expect(response.status).toBe(201);
     expect(response.body.status).toBe("success");
     expect(response.body).toHaveProperty("userID");
@@ -52,7 +54,9 @@ describe("POST /login", () => {
         password: "wrongPassword"
       })
       .set("Accept", "application/json");
-
+    if (response.status !== 401) {
+      console.log(response.body);
+    }
     expect(response.status).toBe(401);
     expect(response.body.status).toBe("error");
     expect(response.body.message).toBe("Password dont correct");
@@ -64,7 +68,9 @@ describe("POST /login", () => {
       .post("/user/login")
       .send({ email: "", password: "" })
       .set("Accept", "application/json");
-
+    if (response.status !== 400) {
+      console.log(response.body);
+    }
     expect(response.status).toBe(400);
     expect(response.body.status).toBe("error");
     expect(response.body.message).toBe("Validation failed");
@@ -81,7 +87,9 @@ describe("POST /login", () => {
         password: "somePassword123!"
       })
       .set("Accept", "application/json");
-
+    if (response.status !== 404) {
+      console.log(response.body);
+    }
     expect(response.status).toBe(404);
     expect(response.body.status).toBe("error");
     expect(response.body.message).toBeDefined();

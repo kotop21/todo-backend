@@ -8,7 +8,6 @@ interface AccessTokenData {
   createdAt: string;
 }
 
-// Расширяем Request, чтобы TS знал о user
 declare global {
   namespace Express {
     interface Request {
@@ -31,7 +30,7 @@ export const authenticateToken = (req: Request, res: Response, next: NextFunctio
 
   try {
     const payload = jwt.verify(token, secret) as AccessTokenData;
-    req.user = payload; // кладём данные в req.user
+    req.user = payload;
     next();
   } catch (err) {
     return res.status(401).json({
