@@ -19,5 +19,7 @@ jobs:
         run: npm install -g pnpm
       - name: Install dependencies
         run: pnpm install
+      - name: Ensure ts-node is installed
+        run: pnpm add -D ts-node
       - name: Run tests
         run: pnpm test
