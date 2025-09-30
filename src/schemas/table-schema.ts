@@ -32,7 +32,7 @@ export const DeleteTableDto = z.object({
 });
 
 export const GetTableDto = z.object({
-  tableId: z
+  userId: z
     .number({ message: "Invalid table id" })
     .min(1, { message: "Table id is required" })
 });

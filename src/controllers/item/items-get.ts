@@ -1,16 +1,11 @@
 import type { Request, Response } from 'express';
 import { getItem } from '../../service/item/get-items.js';
+import { GetItemDto } from "../../schemas/item-schema.js";
 
 export const getItemsCon = async (req: Request, res: Response) => {
-  const userId = req.user?.userID;
-  if (!userId) {
-    return res.status(401).json({
-      status: 'error',
-      message: 'User not authenticated',
-      timestamp: new Date(),
-    });
-  }
-  const result = await getItem(userId)
+  const userId = GetItemDto.parse({ userId: Number(req.params.id) });
+
+  const result = await getItem(userId.userId)
 
   res.status(201).json({
     status: 'success',
