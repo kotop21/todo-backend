@@ -1,4 +1,3 @@
-// user-schema.ts
 import { z } from "zod";
 
 export const RegisterUserDto = z.object({

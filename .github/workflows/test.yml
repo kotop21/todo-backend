@@ -1,4 +1,4 @@
-name: Run Tests on Push to develop
+name: Run Tests on Develop
 
 on:
   push:
@@ -11,19 +11,23 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Set up Node.js
+
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20"
+
       - name: Install pnpm
         run: npm install -g pnpm
+
       - name: Install dependencies
-        run: pnpm install && pnpm add -D ts-node typescript @types/node
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Ensure ts-node is installed
+        run: pnpm add -D ts-node
       - name: Run tests
         run: pnpm test
-      - name: Upload test results
-        if: ${{ failure() }}
-        run: echo "Тесты завершились с ошибкой. Проверьте логи выше."
-      - name: Success message
-        if: ${{ success() }}
-        run: echo "Все этапы CI/CD прошли успешно!"
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}
+          PRISMA_DISABLE_WARNINGS: "1"

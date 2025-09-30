@@ -21,7 +21,7 @@ export const DeleteItemDto = z.object({
 });
 
 export const GetItemDto = z.object({
-  itemId: z
+  userId: z
     .number({ message: "Invalid Item id" })
     .min(1, { message: "Item id is required" })
 });
