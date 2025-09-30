@@ -18,7 +18,7 @@ jobs:
       - name: Install pnpm
         run: npm install -g pnpm
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install && pnpm add -D ts-node typescript @types/node
       - name: Run tests
         run: pnpm test
       - name: Upload test results
