@@ -1,9 +1,9 @@
-name: Run Tests on Push to test
+name: Run Tests on Push to develop
 
 on:
   push:
     branches:
-      - test
+      - develop
 
 jobs:
   test:
