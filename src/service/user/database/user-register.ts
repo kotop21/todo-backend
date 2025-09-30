@@ -3,7 +3,7 @@ import { hashPassword } from "../crypt-password.js";
 import { regSearchUserByEmail } from "./user-search.js";
 import { createRefreshToken } from "./user-refresh-token.js";
 
-export const createUser = async (userEmail: string) => {
+export const createUser = async (userEmail: string, userPassword: string) => {
   if (!userEmail) {
     const error: any = new Error("Email is required.");
     error.statusCode = 400;
@@ -18,7 +18,7 @@ export const createUser = async (userEmail: string) => {
       throw error;
     }
 
-    const hashedPassword = await hashPassword(userEmail);
+    const hashedPassword = await hashPassword(userPassword);
 
     const newUser = await db.user.create({
       data: {

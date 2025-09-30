@@ -11,8 +11,11 @@ export const regSearchUserByEmail = async (email: string) => {
     return await db.user.findFirst({
       where: { email },
     });
-  } catch (err) {
+  } catch (err: any) {
     console.error("Error register search User by email:", err);
+    if (err.statusCode) {
+      throw err;
+    }
     const error: any = new Error("Internal server error");
     error.statusCode = 500;
     throw error;
@@ -44,8 +47,13 @@ export const searchUserByEmail = async (email: string) => {
       refreshToken: user.refreshToken,
       refreshTokenExpiresAt: user.refreshTokenExpiresAt,
     };
-  } catch (err) {
+  } catch (err: any) {
     console.error("Error search User by email:", err);
+
+    if (err.statusCode) {
+      throw err;
+    }
+
     const error: any = new Error("Internal server error");
     error.statusCode = 500;
     throw error;
@@ -75,8 +83,11 @@ export const searchUserById = async (id: number) => {
       refreshToken: user.refreshToken,
       refreshTokenExpiresAt: user.refreshTokenExpiresAt,
     };
-  } catch (err) {
+  } catch (err: any) {
     console.error("Error search User by id:", err);
+    if (err.statusCode) {
+      throw err;
+    }
     const error: any = new Error("Internal server error");
     error.statusCode = 500;
     throw error;
@@ -108,8 +119,11 @@ export const searchRefreshToken = async (refreshTokenIn: string) => {
 
     return { id: user.id };
 
-  } catch (err) {
+  } catch (err: any) {
     console.error("Error search User by refresh token:", err);
+    if (err.statusCode) {
+      throw err;
+    }
     const error: any = new Error("Internal server error");
     error.statusCode = 500;
     throw error;

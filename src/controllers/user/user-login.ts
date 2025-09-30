@@ -4,13 +4,13 @@ import { createRefreshToken } from '../../service/user/database/user-refresh-tok
 import { generateAccessToken } from '../../service/gen-access-token.js';
 import { LoginUserDto } from "../../schemas/user-schema.js";
 import { verifyPassword } from '../../service/user/crypt-password.js';
-import { ZodError } from 'zod';
 
 export const userLoginCon = async (req: Request, res: Response) => {
   const validData = LoginUserDto.parse(req.body);
 
   const userData = await searchUserByEmail(validData.email);
-  const verifPassword = await verifyPassword(validData.password, userData.password)
+  const verifPassword = await verifyPassword(validData.password, userData.password);
+
   const refreshToken = await createRefreshToken();
 
   const maxAgeRefresh = refreshToken.refreshTokenExpiresAt.getTime() - Date.now();
@@ -42,6 +42,7 @@ export const userLoginCon = async (req: Request, res: Response) => {
     status: 'success',
     message: "Autorization is success",
     userID: userData.userid,
+    userRegDate: userData.regDate,
     timestamp: new Date(),
   });
 

@@ -17,7 +17,7 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "email": { "type": "string", "example": "user@mail.com" },
+                  "email": { "type": "email", "example": "user@mail.com" },
                   "password": { "type": "string", "example": "strongPassword123!" }
                 },
                 "required": ["email", "password"]

@@ -1,10 +1,10 @@
 import type { Request, Response } from 'express';
 import { addItem } from '../../service/item/add-item.js';
-import { AddItemDto } from '../../schemas/item-schema.js';
+import { CreateItemDto } from '../../schemas/item-schema.js';
 import { ZodError } from 'zod';
 
 export const addItemCon = async (req: Request, res: Response) => {
-  const validData = AddItemDto.parse(req.body);
+  const validData = CreateItemDto.parse(req.body);
   const userId = req.user?.userID;
   if (!userId) {
     return res.status(401).json({
@@ -21,6 +21,7 @@ export const addItemCon = async (req: Request, res: Response) => {
     status: 'success',
     message: 'Item created',
     tableName: result.itemName,
+    itemId: result.itemId,
     timestamp: new Date(),
   });
 };

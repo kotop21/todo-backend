@@ -1,12 +1,11 @@
 import type { Request, Response } from 'express';
 import { createUser } from "../../service/user/database/user-register.js";
 import { RegisterUserDto } from "../../schemas/user-schema.js";
-import { ZodError } from "zod";
 import { generateAccessToken } from '../../service/gen-access-token.js';
 
 export const userRegisterCon = async (req: Request, res: Response) => {
   const validData = RegisterUserDto.parse(req.body);
-  const result = await createUser(validData.email);
+  const result = await createUser(validData.email, validData.password);
 
   const maxAgeRefresh = result.refreshTokenExpiresAt.getTime() - Date.now();
 
