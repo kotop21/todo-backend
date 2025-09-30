@@ -2,14 +2,14 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Todo API",
-    "version": "1.0.0",
+    "version": "0.0.5",
     "description": "API для управления пользователями и задачами"
   },
   "paths": {
     "/register": {
       "post": {
         "tags": ["User"],
-        "summary": "Регистрация нового пользователя",
+        "summary": "Register new user",
         "requestBody": {
           "required": true,
           "content": {
@@ -17,14 +17,8 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "email": {
-                    "type": "string",
-                    "example": "user@mail.com"
-                  },
-                  "password": {
-                    "type": "string",
-                    "example": "strongPassword123!"
-                  }
+                  "email": { "type": "string", "example": "user@mail.com" },
+                  "password": { "type": "string", "example": "strongPassword123!" }
                 },
                 "required": ["email", "password"]
               }
@@ -32,57 +26,236 @@
           }
         },
         "responses": {
-          "201": {
-            "description": "Пользователь успешно зарегистрирован",
-            "content": {
-              "application/json": {
-                "example": {
-                  "status": "success",
-                  "message": "User register"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Ошибка валидации или некорректные данные",
-            "content": {
-              "application/json": {
-                "example": {
-                  "status": "error",
-                  "message": "Validation failed",
-                  "errors": {
-                    "email": "Invalid email address",
-                    "password": "Password is required"
-                  },
-                  "timestamp": "2025-09-23T12:34:56.789Z"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Ошибка пользователь уже зарегестрирован",
-            "content": {
-              "application/json": {
-                "example": {
-                  "status": "error",
-                  "message": "Email already exists"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Внутренняя ошибка сервера",
-            "content": {
-              "application/json": {
-                "example": {
-                  "status": "error",
-                  "message": "Internal server error"
-                }
+          "201": { "description": "User registered", "content": { "application/json": { "example": { "status": "success", "message": "User register" } } } },
+          "400": { "description": "Validation error", "content": { "application/json": { "example": { "status": "error", "message": "Validation failed" } } } },
+          "409": { "description": "Email already exists", "content": { "application/json": { "example": { "status": "error", "message": "Email already exists" } } } },
+          "500": { "description": "Internal server error", "content": { "application/json": { "example": { "status": "error", "message": "Internal server error" } } } }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "tags": ["User"],
+        "summary": "User login",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": { "type": "string", "example": "user@mail.com" },
+                  "password": { "type": "string", "example": "strongPassword123!" }
+                },
+                "required": ["email", "password"]
               }
             }
           }
+        },
+        "responses": {
+          "200": { "description": "Login success", "content": { "application/json": { "example": { "status": "success", "token": "jwt-token" } } } },
+          "400": { "description": "Validation error", "content": { "application/json": { "example": { "status": "error", "message": "Validation failed" } } } },
+          "401": { "description": "Unauthorized", "content": { "application/json": { "example": { "status": "error", "message": "Invalid credentials" } } } },
+          "500": { "description": "Internal server error", "content": { "application/json": { "example": { "status": "error", "message": "Internal server error" } } } }
+        }
+      }
+    },
+    "/get-token": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Get new access token by refresh token",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "refreshToken": { "type": "string", "example": "refresh-token-value" }
+                },
+                "required": ["refreshToken"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Token refreshed", "content": { "application/json": { "example": { "status": "success", "token": "jwt-token" } } } },
+          "401": { "description": "Unauthorized", "content": { "application/json": { "example": { "status": "error", "message": "Invalid refresh token" } } } },
+          "500": { "description": "Internal server error", "content": { "application/json": { "example": { "status": "error", "message": "Internal server error" } } } }
+        }
+      }
+    },
+    "/item": {
+      "post": {
+        "tags": ["Item"],
+        "summary": "Add item",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "itemName": { "type": "string", "example": "Buy milk" },
+                  "tableId": { "type": "integer", "example": 1 }
+                },
+                "required": ["itemName", "tableId"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Item created", "content": { "application/json": { "example": { "status": "success", "itemId": 1 } } } },
+          "400": { "description": "Validation error", "content": { "application/json": { "example": { "status": "error", "message": "Validation failed" } } } },
+          "401": { "description": "Unauthorized", "content": { "application/json": { "example": { "status": "error", "message": "Unauthorized" } } } },
+          "500": { "description": "Internal server error", "content": { "application/json": { "example": { "status": "error", "message": "Internal server error" } } } }
+        }
+      },
+      "put": {
+        "tags": ["Item"],
+        "summary": "Edit item",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "itemId": { "type": "integer", "example": 1 },
+                  "itemName": { "type": "string", "example": "Buy bread" }
+                },
+                "required": ["itemId", "itemName"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Item updated", "content": { "application/json": { "example": { "status": "success", "itemId": 1 } } } },
+          "400": { "description": "Validation error", "content": { "application/json": { "example": { "status": "error", "message": "Validation failed" } } } },
+          "401": { "description": "Unauthorized", "content": { "application/json": { "example": { "status": "error", "message": "Unauthorized" } } } },
+          "404": { "description": "Item not found", "content": { "application/json": { "example": { "status": "error", "message": "Item not found" } } } },
+          "500": { "description": "Internal server error", "content": { "application/json": { "example": { "status": "error", "message": "Internal server error" } } } }
+        }
+      },
+      "get": {
+        "tags": ["Item"],
+        "summary": "Get all items",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": { "description": "List of items", "content": { "application/json": { "example": { "status": "success", "items": [] } } } },
+          "401": { "description": "Unauthorized", "content": { "application/json": { "example": { "status": "error", "message": "Unauthorized" } } } },
+          "500": { "description": "Internal server error", "content": { "application/json": { "example": { "status": "error", "message": "Internal server error" } } } }
+        }
+      }
+    },
+    "/item/{id}": {
+      "delete": {
+        "tags": ["Item"],
+        "summary": "Delete item",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "Item deleted", "content": { "application/json": { "example": { "status": "success" } } } },
+          "401": { "description": "Unauthorized", "content": { "application/json": { "example": { "status": "error", "message": "Unauthorized" } } } },
+          "404": { "description": "Item not found", "content": { "application/json": { "example": { "status": "error", "message": "Item not found" } } } },
+          "500": { "description": "Internal server error", "content": { "application/json": { "example": { "status": "error", "message": "Internal server error" } } } }
+        }
+      }
+    },
+    "/table": {
+      "post": {
+        "tags": ["Table"],
+        "summary": "Add table",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "tableName": { "type": "string", "example": "Groceries" }
+                },
+                "required": ["tableName"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Table created", "content": { "application/json": { "example": { "status": "success", "tableId": 1 } } } },
+          "400": { "description": "Validation error", "content": { "application/json": { "example": { "status": "error", "message": "Validation failed" } } } },
+          "401": { "description": "Unauthorized", "content": { "application/json": { "example": { "status": "error", "message": "Unauthorized" } } } },
+          "500": { "description": "Internal server error", "content": { "application/json": { "example": { "status": "error", "message": "Internal server error" } } } }
+        }
+      },
+      "put": {
+        "tags": ["Table"],
+        "summary": "Edit table",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "tableId": { "type": "integer", "example": 1 },
+                  "tableName": { "type": "string", "example": "Work" }
+                },
+                "required": ["tableId", "tableName"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Table updated", "content": { "application/json": { "example": { "status": "success", "tableId": 1 } } } },
+          "400": { "description": "Validation error", "content": { "application/json": { "example": { "status": "error", "message": "Validation failed" } } } },
+          "401": { "description": "Unauthorized", "content": { "application/json": { "example": { "status": "error", "message": "Unauthorized" } } } },
+          "404": { "description": "Table not found", "content": { "application/json": { "example": { "status": "error", "message": "Table not found" } } } },
+          "500": { "description": "Internal server error", "content": { "application/json": { "example": { "status": "error", "message": "Internal server error" } } } }
+        }
+      },
+      "get": {
+        "tags": ["Table"],
+        "summary": "Get all tables",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": { "description": "List of tables", "content": { "application/json": { "example": { "status": "success", "tables": [] } } } },
+          "401": { "description": "Unauthorized", "content": { "application/json": { "example": { "status": "error", "message": "Unauthorized" } } } },
+          "500": { "description": "Internal server error", "content": { "application/json": { "example": { "status": "error", "message": "Internal server error" } } } }
+        }
+      }
+    },
+    "/table/{id}": {
+      "delete": {
+        "tags": ["Table"],
+        "summary": "Delete table",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "Table deleted", "content": { "application/json": { "example": { "status": "success" } } } },
+          "401": { "description": "Unauthorized", "content": { "application/json": { "example": { "status": "error", "message": "Unauthorized" } } } },
+          "404": { "description": "Table not found", "content": { "application/json": { "example": { "status": "error", "message": "Table not found" } } } },
+          "500": { "description": "Internal server error", "content": { "application/json": { "example": { "status": "error", "message": "Internal server error" } } } }
+        }
+      }
+    },
+    "/": {
+      "post": {
+        "tags": ["Root"],
+        "summary": "Root endpoint",
+        "responses": {
+          "200": { "description": "Root response", "content": { "application/json": { "example": { "status": "success" } } } },
+          "500": { "description": "Internal server error", "content": { "application/json": { "example": { "status": "error", "message": "Internal server error" } } } }
         }
       }
     }
   }
+  
 }
