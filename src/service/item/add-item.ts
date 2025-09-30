@@ -8,6 +8,16 @@ export const addItem = async (nameItem: string, tableId: number, userId: number)
   }
 
   try {
+    const table = await db.table.findUnique({
+      where: { id: tableId },
+    });
+
+    if (!table) {
+      const error: any = new Error("Table not found");
+      error.statusCode = 404;
+      throw error;
+    }
+
     const newItem = await db.tableItem.create({
       data: {
         itemName: nameItem,
@@ -25,8 +35,11 @@ export const addItem = async (nameItem: string, tableId: number, userId: number)
       userId: newItem.userId,
       itemId: newItem.id,
     };
-  } catch (err) {
+  } catch (err: any) {
     console.error("Ошибка при создании item:", err);
+    if (err.statusCode) {
+      throw err;
+    }
     const error: any = new Error("Не удалось создать itemed");
     error.statusCode = 400;
     throw error;

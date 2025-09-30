@@ -1,6 +1,10 @@
 import { ZodError } from "zod";
 import type { Request, Response, NextFunction } from "express";
 
+// ANSI escape codes для красного цвета
+const red = "\x1b[31m";
+const reset = "\x1b[0m";
+
 export const errorHandler = (
   err: any,
   req: Request,
@@ -8,9 +12,13 @@ export const errorHandler = (
   next: NextFunction
 ) => {
   if (err instanceof ZodError) {
-    console.error("Validation error:", JSON.stringify(err.issues, null, 2));
+    console.error(
+      `${red}❌ Validation error:\n${reset} ${JSON.stringify(err.issues, null, 2)}`
+    );
   } else {
-    console.error(`Error: ${err.message} (status: ${err.statusCode || 500})`);
+    console.error(
+      `${red}❌ Error:${reset} ${err.message} (status: ${err.statusCode || 500})`
+    );
   }
 
   if (err instanceof ZodError) {

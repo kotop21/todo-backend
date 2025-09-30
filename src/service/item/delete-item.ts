@@ -11,12 +11,23 @@ export const deleteItem = async (itemId: number) => {
       where: { id: itemId },
     });
 
+    if (!item) {
+      const error: any = new Error("Item not found");
+      error.statusCode = 404;
+      throw error;
+    }
+
     return await db.tableItem.delete({
       where: { id: itemId },
     });
-  } catch (err) {
-    console.error("Ошибка при удалении item:", err);
-    const error: any = new Error("Не удалось удалить iteme");
+  } catch (err: any) {
+    console.error("Error delete Item:", err);
+
+    if (err.statusCode) {
+      throw err;
+    }
+
+    const error: any = new Error("Failed to delete Item");
     error.statusCode = 400;
     throw error;
   };

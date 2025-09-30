@@ -6,7 +6,7 @@ import { asyncHandler } from "../middlawes/async-handler.js";
 const tableRouter: Router = Router();
 
 tableRouter.post("/", authenticateToken, asyncHandler(table.createTableCon));
-tableRouter.delete("/", authenticateToken, asyncHandler(table.deleteTableCon));
+tableRouter.delete("/:id", authenticateToken, asyncHandler(table.deleteTableCon));
 tableRouter.put("/", authenticateToken, asyncHandler(table.editTableCon));
 tableRouter.get("/", authenticateToken, asyncHandler(table.getTablesCon));
 
