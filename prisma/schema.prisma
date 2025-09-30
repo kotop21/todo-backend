@@ -15,43 +15,34 @@ datasource db {
 }
 
 model User {
-  id       Int      @id @default(autoincrement())
-  email    String   @unique
-  password String
-  regDate  DateTime @default(now())
+  id                    Int      @id @default(autoincrement())
+  email                 String   @unique
+  password              String
+  regDate               DateTime @default(now())
+  refreshToken          String
+  refreshTokenExpiresAt DateTime
 
-  columns   Column[]
-  todoItems TodoItem[]
-  Session   Session[]
+  table     Table[]
+  todoItems TableItem[]
 }
 
-model Column {
+model Table {
   id     Int    @id @default(autoincrement())
   userId Int
   name   String
 
-  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  todoItems TodoItem[]
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  todoItems TableItem[]
 }
 
-model TodoItem {
+model TableItem {
   id          Int      @id @default(autoincrement())
-  columnId    Int
+  tableId     Int
   userId      Int
-  itemText    String
+  itemName    String
   itemDescrip String?
   itemDate    DateTime @default(now())
 
-  column Column @relation(fields: [columnId], references: [id], onDelete: Cascade)
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-model Session {
-  id           Int      @id @default(autoincrement())
-  userId       Int
-  refreshToken String   @unique
-  createdAt    DateTime @default(now())
-  expiresAt    DateTime
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  table Table @relation(fields: [tableId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

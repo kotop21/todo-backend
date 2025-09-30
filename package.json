@@ -1,13 +1,12 @@
 {
   "name": "backend",
-  "version": "0.0.1",
+  "version": "0.0.5",
   "description": "",
   "main": "index.js",
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "start": "tsc && node dist/index.js",
     "test": "NODE_OPTIONS='--experimental-vm-modules --no-warnings' jest"
-
   },
   "type": "module",
   "keywords": [],
@@ -30,7 +29,12 @@
     "@prisma/client": "^6.16.2",
     "@prisma/extension-accelerate": "^2.0.2",
     "@types/bcrypt": "^6.0.0",
+    "@types/cookie-parser": "^1.4.9",
+    "@types/jsonwebtoken": "^9.0.10",
+    "cookie-parser": "^1.4.7",
     "express": "^5.1.0",
+    "install": "^0.13.0",
+    "jsonwebtoken": "^9.0.2",
     "prisma": "^6.16.2",
     "swagger-ui-express": "^5.0.1",
     "tsx": "^4.20.5",

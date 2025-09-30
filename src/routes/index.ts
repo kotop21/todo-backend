@@ -1,7 +1,11 @@
-import indexRouter from "./index.route.js";
+import rootRouter from "./root.route.js";
 import userRouter from "./user.route.js";
+import tableRouter from "./table.route.js";
+import itemRouter from "./item.route.js";
 
 export default {
-  index: indexRouter,
-  user: userRouter
+  rootRouter,
+  userRouter,
+  tableRouter,
+  itemRouter
 };

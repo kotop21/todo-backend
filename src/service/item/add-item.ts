@@ -1,0 +1,47 @@
+import { db } from "../index-database.js";
+
+export const addItem = async (nameItem: string, tableId: number, userId: number) => {
+  if (!userId || !nameItem || !tableId) {
+    const error: any = new Error("User id and Item name and Table id is required");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  try {
+    const table = await db.table.findUnique({
+      where: { id: tableId },
+    });
+
+    if (!table) {
+      const error: any = new Error("Table not found");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    const newItem = await db.tableItem.create({
+      data: {
+        itemName: nameItem,
+        table: {
+          connect: { id: tableId },
+        },
+        user: {
+          connect: { id: userId },
+        },
+      },
+    });
+
+    return {
+      itemName: newItem.itemName,
+      userId: newItem.userId,
+      itemId: newItem.id,
+    };
+  } catch (err: any) {
+    console.error("Ошибка при создании item:", err);
+    if (err.statusCode) {
+      throw err;
+    }
+    const error: any = new Error("Не удалось создать itemed");
+    error.statusCode = 400;
+    throw error;
+  };
+};
