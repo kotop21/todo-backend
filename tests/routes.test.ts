@@ -76,8 +76,6 @@ describe('Full user/item/table flow', () => {
     expect(res.statusCode).toBe(201);
     expect(res.body.status).toBe('success');
   });
-
-  // Не удаляем пользователя напрямую, чтобы не нарушить логику refresh токенов
 });
 
 describe('Error cases for user/item/table', () => {
@@ -88,22 +86,24 @@ describe('Error cases for user/item/table', () => {
   const testPassword = 'Test123!';
 
   beforeAll(async () => {
-    // Регистрируем пользователя и получаем куки
     const regRes = await request(app)
       .post('/user/register')
       .send({ email: testEmail, password: testPassword });
+
     cookies = Array.isArray(regRes.headers['set-cookie']) ? regRes.headers['set-cookie'] : [regRes.headers['set-cookie']];
-    // Создаём таблицу
+
     const tableRes = await request(app)
       .post('/table')
       .set('Cookie', cookies)
       .send({ tableName: 'ErrTable' });
+
     tableId = tableRes.body.tableId;
-    // Создаём item
+
     const itemRes = await request(app)
       .post('/item')
       .set('Cookie', cookies)
       .send({ itemName: 'ErrItem', tableId });
+
     itemId = itemRes.body.itemId;
   });
 
@@ -165,14 +165,14 @@ describe('Error cases for user/item/table', () => {
 
   it('should fail to get items without auth', async () => {
     const res = await request(app)
-      .get('/item');
+      .get(`/item/999999`);
     expect(res.statusCode).toBe(401);
     expect(res.body.status).toBe('error');
   });
 
   it('should fail to get tables without auth', async () => {
     const res = await request(app)
-      .get('/table');
+      .get(`/table/99999`);
     expect(res.statusCode).toBe(401);
     expect(res.body.status).toBe('error');
   });
