@@ -3,7 +3,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {},
-    
+    "rootDir": "./src",
     "outDir": "./dist",
     "typeRoots": ["src/types", "./node_modules/@types"],
     "module": "nodenext",
@@ -29,5 +29,5 @@
     "moduleDetection": "force",
     "skipLibCheck": true,
   },
-  "exclude": ["tests"]
+  "exclude": ["tests", "jest.config.ts"]
 }
