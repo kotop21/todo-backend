@@ -6,11 +6,8 @@ on:
       - develop
 
 jobs:
-  setup:
-    name: Setup Environment
+  test:
     runs-on: ubuntu-latest
-    outputs:
-      cache-hit: ${{ steps.cache.outputs.cache-hit }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -28,15 +25,6 @@ jobs:
 
       - name: Ensure ts-node is installed
         run: pnpm add -D ts-node
-
-  test:
-    name: Run Tests
-    needs: setup
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
       - name: Run tests
         run: pnpm test
         env:
