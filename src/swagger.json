@@ -2,8 +2,8 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Todo API",
-    "version": "1.0.0",
-    "description": "API для управления пользователями, таблицами и задачами. Все методы используют cookie для авторизации."
+    "version": "0.0.5",
+    "description": "API для керування користувачами, таблицями та завданнями. Усі методи використовують cookie для авторизації. У кожному запиті застосовується валідація даних, тому некоректні або неповні дані повертають помилки валідації."
   },
   "components": {
     "securitySchemes": {
@@ -146,7 +146,8 @@
                   "properties": {
                     "status": { "type": "string", "example": "success" },
                     "message": { "type": "string", "example": "Service is running" },
-                    "tokenStatus": { "type": "string", "example": "No token provided" }
+                    "tokenStatus": { "type": "string", "example": "No token provided" },
+                    "timestamp": { "type": "date", "example": "2025-09-30T21:09:14.374Z" }
                   }
                 }
               }
@@ -183,7 +184,17 @@
         "responses": {
           "201": {
             "description": "User registered",
-            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/User" } } }
+            "content": {
+                "application/json": {
+                  "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+                  "example": {
+                    "status": "success",
+                    "message": "User register",
+                    "userID": 1,
+                    "timestamp": "2025-09-30T21:09:14.374Z"
+                  }
+                }
+              }
           },
           "400": {
               "description": "Validation error",
@@ -229,12 +240,51 @@
         },
         "responses": {
           "201": {
-            "description": "Login success",
-            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/User" } } }
+            "description": "User login",
+            "content": {
+                "application/json": {
+                  "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+                  "example": {
+                    "status": "success",
+                    "message": "Autorization is success",
+                    "userRegDate": "2025-09-30T21:09:14.364Z",
+                    "userID": 1,
+                    "timestamp": "2025-09-30T21:09:14.374Z"
+                  }
+                }
+            }
           },
           "400": {
             "description": "Validation error",
-            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "userNotFound": {
+                    "summary": "User not found",
+                    "value": {
+                      "status": "error",
+                      "message": "User not found",
+                      "timestamp": "2025-09-30T21:09:14.374Z"
+                    }
+                  },
+                  "invalidPassword": {
+                    "summary": "Validation failed",
+                    "value": {
+                      "status": "error",
+                      "message": "Validation failed",
+                      "errors": {
+                        "email": "string",
+                        "password": "string"
+                      },
+                      "timestamp": "2025-09-30T21:09:14.374Z"
+                    }
+                  }
+                }
+              }
+            }
           },
           "401": {
               "description": "Invalid credentials",
@@ -257,20 +307,44 @@
         "tags": ["User"],
         "summary": "Get new access token by refresh token",
         "security": [{ "refreshTokenCookie": [] }],
+        "description": "This endpoint accepts the refreshToken from cookies and issues a new access token.",
         "responses": {
           "201": {
             "description": "Token refreshed",
-            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/User" } } }
+            "content": {
+                "application/json": {
+                  "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+                  "example": {
+                    "status": "success",
+                    "message": "Successful token creation",
+                    "userID": 1,
+                    "timestamp": "2025-09-30T21:09:14.374Z"
+                  }
+                }
+              }
           },
           "401": {
               "description": "Invalid refresh token",
               "content": {
                 "application/json": {
                   "schema": { "$ref": "#/components/schemas/ErrorResponse" },
-                  "example": {
-                    "status": "error",
-                    "message": "Invalid refresh token",
-                    "timestamp": "2025-09-30T21:09:14.374Z"
+                  "examples": {
+                    "userNotFound": {
+                      "summary": "User doesn't have refreshToken",
+                      "value": {
+                        "status": "error",
+                        "message": "User doesn't have refreshToken",
+                        "timestamp": "2025-09-30T21:09:14.374Z"
+                      }
+                    },
+                    "invalidPassword": {
+                      "summary": "User has an accessToken",
+                      "value": {
+                        "status": "error",
+                        "message": "User has an accessToken",
+                        "timestamp": "2025-09-30T21:09:14.374Z"
+                      }
+                    }
                   }
                 }
               }
