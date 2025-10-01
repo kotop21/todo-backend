@@ -26,7 +26,7 @@ jobs:
       - name: Ensure ts-node is installed
         run: pnpm add -D ts-node
       - name: Run tests
-        run: pnpm test
+        run: pnpm test -- --reporter=github
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}
