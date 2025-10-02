@@ -7,7 +7,7 @@
     "dev": "tsx watch src/index.ts",
     "build": "tsc && cp -r src/generated dist/generated",
     "start": "pnpm build && node dist/index.js",
-    "test": "NODE_OPTIONS='--experimental-vm-modules --no-warnings' jest"
+    "test": "NODE_OPTIONS='--experimental-vm-modules --no-warnings' jest --silent"
   },
   "type": "module",
   "keywords": [],
