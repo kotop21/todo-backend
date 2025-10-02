@@ -20,6 +20,10 @@ jobs:
 
       - name: Run tests
         run: pnpm test
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}
+          PRISMA_DISABLE_WARNINGS: "1"
 
       - name: Start project
         run: pnpm start
