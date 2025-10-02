@@ -9,6 +9,8 @@
     "module": "nodenext",
     "target": "esnext",
     "types": ["jest", "node"],
+    "allowJs": true,
+    "esModuleInterop": true,
     // Other Outputs
     "sourceMap": true,
     "declaration": true,
@@ -29,5 +31,5 @@
     "moduleDetection": "force",
     "skipLibCheck": true,
   },
-  "exclude": ["tests", "jest.config.ts"]
+  "exclude": ["jest.config.ts", "./tests/*"]
 }
