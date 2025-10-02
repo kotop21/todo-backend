@@ -1,8 +1,8 @@
-import { Router } from "express";
+import express from "express";
 import user from "../controllers/user/index.js";
 import { asyncHandler } from "../middlawes/async-handler.js";
 
-const userRouter: Router = Router();
+const userRouter: express.Router = express.Router();
 
 userRouter.post("/register", asyncHandler(user.userRegisterCon));
 userRouter.post("/login", asyncHandler(user.userLoginCon));

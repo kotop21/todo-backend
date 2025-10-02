@@ -1,9 +1,9 @@
-import { Router } from "express";
+import express from "express";
 import item from "../controllers/item/index.js";
 import { authenticateToken } from "../middlawes/auth-token.js";
 import { asyncHandler } from "../middlawes/async-handler.js";
 
-const itemRouter: Router = Router();
+const itemRouter: express.Router = express.Router();
 
 itemRouter.post("/", authenticateToken, asyncHandler(item.addItemCon));
 itemRouter.delete("/:id", authenticateToken, asyncHandler(item.deleteItemCon))

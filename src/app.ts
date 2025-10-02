@@ -1,5 +1,4 @@
 import express from "express";
-import type { Express } from "express";
 import swaggerUi from "swagger-ui-express";
 import swaggerDocument from "./swagger.json" with { type: "json" };
 import cookieParser from 'cookie-parser';
@@ -7,7 +6,7 @@ import { errorHandler } from "./middlawes/error-handler.js";
 
 import router from "./routes/index.js"
 
-export const app: Express = express();
+export const app: express.Application = express();
 const swaggerOptions = {
   explorer: true,
   swaggerOptions: {
