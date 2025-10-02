@@ -23,4 +23,5 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}
+          PORT: ${{ secrets.PORT }}
           PRISMA_DISABLE_WARNINGS: "1"
