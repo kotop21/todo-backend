@@ -1,5 +1,5 @@
 import request from 'supertest';
-import { app } from '../src/app';
+import { app } from '../src/app.js';
 import { db } from "../src/service/index-database.js";
 
 describe('Full user/item/table flow', () => {

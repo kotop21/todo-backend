@@ -3,12 +3,14 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {},
-    
+    "rootDir": "./src",
     "outDir": "./dist",
     "typeRoots": ["src/types", "./node_modules/@types"],
     "module": "nodenext",
     "target": "esnext",
     "types": ["jest", "node"],
+    "allowJs": true,
+    "esModuleInterop": true,
     // Other Outputs
     "sourceMap": true,
     "declaration": true,
@@ -23,11 +25,10 @@
 
     // Recommended Options
     "strict": true,
-    "verbatimModuleSyntax": true,
     "isolatedModules": true,
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true,
   },
-  "exclude": ["tests"]
+  "exclude": ["jest.config.ts", "./tests/*"]
 }
