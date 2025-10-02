@@ -1,7 +1,11 @@
+packages:
+  - "src/**"
+  - .
+
 onlyBuiltDependencies:
-  - '@prisma/client'
-  - '@prisma/engines'
-  - '@scarf/scarf'
+  - "@prisma/client"
+  - "@prisma/engines"
+  - "@scarf/scarf"
   - esbuild
   - prisma
   - unrs-resolver
