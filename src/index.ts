@@ -1,21 +1,5 @@
-import express from "express";
 import { app } from "./app.js";
-import { db } from "./service/index-database.js";
-const port: number = 3000;
+// @ts-ignore
+import serverless from "serverless-http";
 
-
-async function main() {
-  app.listen(port, () => {
-    console.log(`Слушаем порт: ${port}`);
-  });
-}
-
-main()
-  .then(async () => {
-    await db.$disconnect();
-  })
-  .catch(async (e) => {
-    console.error(e);
-    await db.$disconnect();
-    process.exit(1);
-  });
+export default serverless(app);

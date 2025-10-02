@@ -37,6 +37,7 @@
     "install": "^0.13.0",
     "jsonwebtoken": "^9.0.2",
     "prisma": "^6.16.2",
+    "serverless-http": "^4.0.0",
     "swagger-ui-express": "^5.0.1",
     "tsx": "^4.20.5",
     "zod": "^4.1.11"
