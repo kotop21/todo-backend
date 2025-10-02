@@ -1,7 +1,7 @@
-import express from "express";
+import { Router } from "express";
 import { root } from "../controllers/root.js";
 
-const rootRouter: express.Router = express.Router();
+const rootRouter: Router = Router();
 rootRouter.post("/", root);
 
 export default rootRouter;
