@@ -19,7 +19,7 @@ jobs:
         run: pnpm prisma generate
 
       - name: Start project
-        run: pnpm dev
+        run: pnpm start
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}
