@@ -1,7 +1,6 @@
-import express from "express";
 import { app } from "./app.js";
 import { db } from "./service/index-database.js";
-const port: number = process.env.PORT ? parseInt(process.env.PORT) : 3000;
+const port: number = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
 
 
 async function main() {
