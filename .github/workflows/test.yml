@@ -29,14 +29,3 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}
           PRISMA_DISABLE_WARNINGS: "1"
-
-      - name: Create Pull Request to test branch
-        if: success()
-        uses: peter-evans/create-pull-request@v5
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          base: test      
-          head: develop     
-          title: "Sync develop → test"
-          body: "Автоматическое обновление ветки test после успешных тестов на develop"
-          draft: false
