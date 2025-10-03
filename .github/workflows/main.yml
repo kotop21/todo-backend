@@ -15,11 +15,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Generate Prisma client
-        run: npx prisma generate
-
       - name: Start project
-        run: pnpm start
+        run: pnpm dev
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}
