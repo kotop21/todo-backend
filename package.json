@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
-    "start": "pnpm build && node dist/index.js",
+    "start": "tsc src/index.ts",
     "test": "NODE_OPTIONS='--experimental-vm-modules --no-warnings' jest --silent"
   },
   "type": "module",
