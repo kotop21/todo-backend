@@ -31,7 +31,6 @@ export const userRegisterCon = async (req: Request, res: Response) => {
     maxAge: accessTokenMaxAge,
   });
 
-
   res.status(201).json({
     status: 'success',
     message: result.message,

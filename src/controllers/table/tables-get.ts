@@ -1,17 +1,12 @@
 import type { Request, Response } from 'express';
 import { ZodError } from 'zod';
 import { getTableByUserId } from '../../service/table/get-tables.js';
+import { GetTableDto } from '../../schemas/table-schema.js';
 
 export const getTablesCon = async (req: Request, res: Response) => {
-  const userId = req.user?.userID;
-  if (!userId) {
-    return res.status(401).json({
-      status: 'error',
-      message: 'User not authenticated',
-      timestamp: new Date(),
-    });
-  }
-  const result = await getTableByUserId(userId)
+  const userId = GetTableDto.parse({ userId: Number(req.params.id) });
+
+  const result = await getTableByUserId(userId.userId)
 
   res.status(201).json({
     status: 'success',

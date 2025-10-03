@@ -3,10 +3,173 @@
   "info": {
     "title": "Todo API",
     "version": "0.0.5",
-    "description": "API для управления пользователями и задачами"
+    "description": "API для керування користувачами, таблицями та завданнями. Усі методи використовують cookie для авторизації. У кожному запиті застосовується валідація даних, тому некоректні або неповні дані повертають помилки валідації."
+  },
+  "components": {
+    "securitySchemes": {
+      "accessTokenCookie": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "accessToken"
+      },
+      "refreshTokenCookie": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "refreshToken"
+      }
+    },
+    "schemas": {
+      "RegisterUserDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "user@mail.com",
+            "pattern": "^.+@.+\\..+$"
+          },
+          "password": {
+            "type": "string",
+            "example": "StrongPassword123!",
+            "minLength": 1, 
+            "pattern": "^(?=.*\\d)(?=.*[^A-Za-z0-9]).+$"
+          }
+        },
+        "required": ["email", "password"]
+      },
+      "LoginUserDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "user@mail.com",
+            "pattern": "^.+@.+\\..+$"
+          },
+          "password": {
+            "type": "string",
+            "example": "StrongPassword123!",
+            "minLength": 1
+          }
+        },
+        "required": ["email", "password"]
+      },
+      "CreateTableDto": {
+        "type": "object",
+        "properties": {
+          "tableName": {
+            "type": "string",
+            "example": "Groceries",
+            "minLength": 1,
+            "maxLength": 10,
+            "pattern": "^[a-zA-Z\u0430-\u044f\u0410-\u042f\u0451\u0401\u0456\u0406\u0457\u0407\u0454\u0404\u0491\u04900-9_]+$"          }
+        },
+        "required": ["tableName"]
+      },
+      "EditTableDto": {
+        "type": "object",
+        "properties": {
+          "tableId": {
+            "type": "integer",
+            "example": 1,
+            "minimum": 1
+          },
+          "tableName": {
+            "type": "string",
+            "example": "Work",
+            "minLength": 1,
+            "maxLength": 10,
+            "pattern": "^[a-zA-Z\u0430-\u044f\u0410-\u042f\u0451\u0401\u0456\u0406\u0457\u0407\u0454\u0404\u0491\u04900-9_]+$"
+          }
+        },
+        "required": ["tableId", "tableName"]
+      },
+      "CreateItemDto": {
+        "type": "object",
+        "properties": {
+          "tableId": {
+            "type": "integer",
+            "example": 1,
+            "minimum": 1
+          },
+          "itemName": {
+            "type": "string",
+            "example": "Buy milk",
+            "minLength": 1,
+            "maxLength": 10,
+            "pattern": "^[a-zA-Z\u0430-\u044f\u0410-\u042f\u0451\u0401\u0456\u0406\u0457\u0407\u0454\u0404\u0491\u04900-9_]+$"
+          }
+        },
+        "required": ["tableId", "itemName"]
+      },
+      "EditItemDto": {
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "integer",
+            "example": 1,
+            "minimum": 1
+          },
+          "itemName": {
+            "type": "string",
+            "example": "Buy bread",
+            "minLength": 1,
+            "maxLength": 10,
+            "pattern": "^[a-zA-Z\u0430-\u044f\u0410-\u042f\u0451\u0401\u0456\u0406\u0457\u0407\u0454\u0404\u0491\u04900-9_]+$"
+          }
+        },
+        "required": ["itemId", "itemName"]
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "status": { "type": "string", "example": "error" },
+          "message": { "type": "string", "example": "Validation failed" },
+          "errors": { "type": "object", "additionalProperties": { "type": "string" } },
+          "timestamp": { "type": "string", "format": "date-time" }
+        }
+      }
+    }
   },
   "paths": {
-    "/register": {
+    "/": {
+      "post": {
+        "tags": ["Root"],
+        "summary": "Root endpoint (healthcheck)",
+        "responses": {
+          "200": {
+            "description": "Service is running",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "example": "success" },
+                    "message": { "type": "string", "example": "Service is running" },
+                    "tokenStatus": { "type": "string", "example": "No token provided" },
+                    "timestamp": { "type": "date", "example": "2025-09-30T21:09:14.374Z" }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+              "description": "Invalid or expired token",
+              "content": {
+                "application/json": {
+                  "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+                  "example": {
+                    "status": "error",
+                    "message": "Invalid or expired token",
+                    "timestamp": "2025-09-30T21:09:14.374Z"
+                  }
+                }
+              }
+          }
+        }
+      }
+    },
+    "/user/register": {
       "post": {
         "tags": ["User"],
         "summary": "Register new user",
@@ -14,26 +177,56 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "email": { "type": "email", "example": "user@mail.com" },
-                  "password": { "type": "string", "example": "strongPassword123!" }
-                },
-                "required": ["email", "password"]
-              }
+              "schema": { "$ref": "#/components/schemas/RegisterUserDto" }
             }
           }
         },
         "responses": {
-          "201": { "description": "User registered", "content": { "application/json": { "example": { "status": "success", "message": "User register" } } } },
-          "400": { "description": "Validation error", "content": { "application/json": { "example": { "status": "error", "message": "Validation failed" } } } },
-          "409": { "description": "Email already exists", "content": { "application/json": { "example": { "status": "error", "message": "Email already exists" } } } },
-          "500": { "description": "Internal server error", "content": { "application/json": { "example": { "status": "error", "message": "Internal server error" } } } }
+          "201": {
+            "description": "User registered",
+            "content": {
+                "application/json": {
+                  "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+                  "example": {
+                    "status": "success",
+                    "message": "User register",
+                    "userID": 1,
+                    "timestamp": "2025-09-30T21:09:14.374Z"
+                  }
+                }
+              }
+          },
+          "400": {
+              "description": "Validation error",
+              "content": {
+                "application/json": {
+                  "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+                  "example": {
+                    "status": "error",
+                    "message": "Validation failed",
+                    "errors": { "email": "Invalid email address" },
+                    "timestamp": "2025-09-30T21:09:14.374Z"
+                  }
+                }
+              }
+          },
+          "409": {
+              "description": "Email already exists",
+              "content": {
+                "application/json": {
+                  "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+                  "example": {
+                    "status": "error",
+                    "message": "Email already exists",
+                    "timestamp": "2025-09-30T21:09:14.374Z"
+                  }
+                }
+              }
+          }
         }
       }
     },
-    "/login": {
+    "/user/login": {
       "post": {
         "tags": ["User"],
         "summary": "User login",
@@ -41,128 +234,121 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "email": { "type": "string", "example": "user@mail.com" },
-                  "password": { "type": "string", "example": "strongPassword123!" }
-                },
-                "required": ["email", "password"]
-              }
+              "schema": { "$ref": "#/components/schemas/LoginUserDto" }
             }
           }
         },
         "responses": {
-          "200": { "description": "Login success", "content": { "application/json": { "example": { "status": "success", "token": "jwt-token" } } } },
-          "400": { "description": "Validation error", "content": { "application/json": { "example": { "status": "error", "message": "Validation failed" } } } },
-          "401": { "description": "Unauthorized", "content": { "application/json": { "example": { "status": "error", "message": "Invalid credentials" } } } },
-          "500": { "description": "Internal server error", "content": { "application/json": { "example": { "status": "error", "message": "Internal server error" } } } }
+          "201": {
+            "description": "User login",
+            "content": {
+                "application/json": {
+                  "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+                  "example": {
+                    "status": "success",
+                    "message": "Autorization is success",
+                    "userRegDate": "2025-09-30T21:09:14.364Z",
+                    "userID": 1,
+                    "timestamp": "2025-09-30T21:09:14.374Z"
+                  }
+                }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "userNotFound": {
+                    "summary": "User not found",
+                    "value": {
+                      "status": "error",
+                      "message": "User not found",
+                      "timestamp": "2025-09-30T21:09:14.374Z"
+                    }
+                  },
+                  "invalidPassword": {
+                    "summary": "Validation failed",
+                    "value": {
+                      "status": "error",
+                      "message": "Validation failed",
+                      "errors": {
+                        "email": "string",
+                        "password": "string"
+                      },
+                      "timestamp": "2025-09-30T21:09:14.374Z"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+              "description": "Invalid credentials",
+              "content": {
+                "application/json": {
+                  "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+                  "example": {
+                    "status": "error",
+                    "message": "Invalid credentials",
+                    "timestamp": "2025-09-30T21:09:14.374Z"
+                  }
+                }
+              }
+          }
         }
       }
     },
-    "/get-token": {
+    "/user/get-token": {
       "post": {
         "tags": ["User"],
         "summary": "Get new access token by refresh token",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "refreshToken": { "type": "string", "example": "refresh-token-value" }
-                },
-                "required": ["refreshToken"]
+        "security": [{ "refreshTokenCookie": [] }],
+        "description": "This endpoint accepts the refreshToken from cookies and issues a new access token.",
+        "responses": {
+          "201": {
+            "description": "Token refreshed",
+            "content": {
+                "application/json": {
+                  "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+                  "example": {
+                    "status": "success",
+                    "message": "Successful token creation",
+                    "userID": 1,
+                    "timestamp": "2025-09-30T21:09:14.374Z"
+                  }
+                }
               }
-            }
-          }
-        },
-        "responses": {
-          "200": { "description": "Token refreshed", "content": { "application/json": { "example": { "status": "success", "token": "jwt-token" } } } },
-          "401": { "description": "Unauthorized", "content": { "application/json": { "example": { "status": "error", "message": "Invalid refresh token" } } } },
-          "500": { "description": "Internal server error", "content": { "application/json": { "example": { "status": "error", "message": "Internal server error" } } } }
-        }
-      }
-    },
-    "/item": {
-      "post": {
-        "tags": ["Item"],
-        "summary": "Add item",
-        "security": [{ "bearerAuth": [] }],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "itemName": { "type": "string", "example": "Buy milk" },
-                  "tableId": { "type": "integer", "example": 1 }
-                },
-                "required": ["itemName", "tableId"]
+          },
+          "401": {
+              "description": "Invalid refresh token",
+              "content": {
+                "application/json": {
+                  "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+                  "examples": {
+                    "userNotFound": {
+                      "summary": "User doesn't have refreshToken",
+                      "value": {
+                        "status": "error",
+                        "message": "User doesn't have refreshToken",
+                        "timestamp": "2025-09-30T21:09:14.374Z"
+                      }
+                    },
+                    "invalidPassword": {
+                      "summary": "User has an accessToken",
+                      "value": {
+                        "status": "error",
+                        "message": "User has an accessToken",
+                        "timestamp": "2025-09-30T21:09:14.374Z"
+                      }
+                    }
+                  }
+                }
               }
-            }
           }
-        },
-        "responses": {
-          "201": { "description": "Item created", "content": { "application/json": { "example": { "status": "success", "itemId": 1 } } } },
-          "400": { "description": "Validation error", "content": { "application/json": { "example": { "status": "error", "message": "Validation failed" } } } },
-          "401": { "description": "Unauthorized", "content": { "application/json": { "example": { "status": "error", "message": "Unauthorized" } } } },
-          "500": { "description": "Internal server error", "content": { "application/json": { "example": { "status": "error", "message": "Internal server error" } } } }
-        }
-      },
-      "put": {
-        "tags": ["Item"],
-        "summary": "Edit item",
-        "security": [{ "bearerAuth": [] }],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "itemId": { "type": "integer", "example": 1 },
-                  "itemName": { "type": "string", "example": "Buy bread" }
-                },
-                "required": ["itemId", "itemName"]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": { "description": "Item updated", "content": { "application/json": { "example": { "status": "success", "itemId": 1 } } } },
-          "400": { "description": "Validation error", "content": { "application/json": { "example": { "status": "error", "message": "Validation failed" } } } },
-          "401": { "description": "Unauthorized", "content": { "application/json": { "example": { "status": "error", "message": "Unauthorized" } } } },
-          "404": { "description": "Item not found", "content": { "application/json": { "example": { "status": "error", "message": "Item not found" } } } },
-          "500": { "description": "Internal server error", "content": { "application/json": { "example": { "status": "error", "message": "Internal server error" } } } }
-        }
-      },
-      "get": {
-        "tags": ["Item"],
-        "summary": "Get all items",
-        "security": [{ "bearerAuth": [] }],
-        "responses": {
-          "200": { "description": "List of items", "content": { "application/json": { "example": { "status": "success", "items": [] } } } },
-          "401": { "description": "Unauthorized", "content": { "application/json": { "example": { "status": "error", "message": "Unauthorized" } } } },
-          "500": { "description": "Internal server error", "content": { "application/json": { "example": { "status": "error", "message": "Internal server error" } } } }
-        }
-      }
-    },
-    "/item/{id}": {
-      "delete": {
-        "tags": ["Item"],
-        "summary": "Delete item",
-        "security": [{ "bearerAuth": [] }],
-        "parameters": [
-          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
-        ],
-        "responses": {
-          "200": { "description": "Item deleted", "content": { "application/json": { "example": { "status": "success" } } } },
-          "401": { "description": "Unauthorized", "content": { "application/json": { "example": { "status": "error", "message": "Unauthorized" } } } },
-          "404": { "description": "Item not found", "content": { "application/json": { "example": { "status": "error", "message": "Item not found" } } } },
-          "500": { "description": "Internal server error", "content": { "application/json": { "example": { "status": "error", "message": "Internal server error" } } } }
         }
       }
     },
@@ -170,92 +356,230 @@
       "post": {
         "tags": ["Table"],
         "summary": "Add table",
-        "security": [{ "bearerAuth": [] }],
+        "security": [{ "accessTokenCookie": [] }],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "tableName": { "type": "string", "example": "Groceries" }
-                },
-                "required": ["tableName"]
-              }
+              "schema": { "$ref": "#/components/schemas/CreateTableDto" }
             }
           }
         },
         "responses": {
-          "201": { "description": "Table created", "content": { "application/json": { "example": { "status": "success", "tableId": 1 } } } },
-          "400": { "description": "Validation error", "content": { "application/json": { "example": { "status": "error", "message": "Validation failed" } } } },
-          "401": { "description": "Unauthorized", "content": { "application/json": { "example": { "status": "error", "message": "Unauthorized" } } } },
-          "500": { "description": "Internal server error", "content": { "application/json": { "example": { "status": "error", "message": "Internal server error" } } } }
+          "201": {
+            "description": "Table created",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Table" } } }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
         }
       },
       "put": {
         "tags": ["Table"],
         "summary": "Edit table",
-        "security": [{ "bearerAuth": [] }],
+        "security": [{ "accessTokenCookie": [] }],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "tableId": { "type": "integer", "example": 1 },
-                  "tableName": { "type": "string", "example": "Work" }
-                },
-                "required": ["tableId", "tableName"]
-              }
+              "schema": { "$ref": "#/components/schemas/EditTableDto" }
             }
           }
         },
         "responses": {
-          "200": { "description": "Table updated", "content": { "application/json": { "example": { "status": "success", "tableId": 1 } } } },
-          "400": { "description": "Validation error", "content": { "application/json": { "example": { "status": "error", "message": "Validation failed" } } } },
-          "401": { "description": "Unauthorized", "content": { "application/json": { "example": { "status": "error", "message": "Unauthorized" } } } },
-          "404": { "description": "Table not found", "content": { "application/json": { "example": { "status": "error", "message": "Table not found" } } } },
-          "500": { "description": "Internal server error", "content": { "application/json": { "example": { "status": "error", "message": "Internal server error" } } } }
-        }
-      },
-      "get": {
-        "tags": ["Table"],
-        "summary": "Get all tables",
-        "security": [{ "bearerAuth": [] }],
-        "responses": {
-          "200": { "description": "List of tables", "content": { "application/json": { "example": { "status": "success", "tables": [] } } } },
-          "401": { "description": "Unauthorized", "content": { "application/json": { "example": { "status": "error", "message": "Unauthorized" } } } },
-          "500": { "description": "Internal server error", "content": { "application/json": { "example": { "status": "error", "message": "Internal server error" } } } }
+          "201": {
+            "description": "Table updated",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Table" } } }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "404": {
+            "description": "Table not found",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
         }
       }
     },
-    "/table/{id}": {
+    "/table/{userId}": {
+          "get": {
+        "tags": ["Table"],
+        "summary": "Get all tables",
+        "security": [{ "accessTokenCookie": [] }],
+        "responses": {
+          "200": {
+            "description": "List of tables",
+            "content": { "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Table" } } } }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      }
+    },
+    "/table/{tableId}": {
       "delete": {
         "tags": ["Table"],
         "summary": "Delete table",
-        "security": [{ "bearerAuth": [] }],
+        "security": [{ "accessTokenCookie": [] }],
         "parameters": [
           { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
         ],
         "responses": {
-          "200": { "description": "Table deleted", "content": { "application/json": { "example": { "status": "success" } } } },
-          "401": { "description": "Unauthorized", "content": { "application/json": { "example": { "status": "error", "message": "Unauthorized" } } } },
-          "404": { "description": "Table not found", "content": { "application/json": { "example": { "status": "error", "message": "Table not found" } } } },
-          "500": { "description": "Internal server error", "content": { "application/json": { "example": { "status": "error", "message": "Internal server error" } } } }
+          "201": {
+            "description": "Table deleted",
+            "content": { "application/json": { "schema": { "type": "object", "properties": { "status": { "type": "string", "example": "success" } } } } }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "404": {
+            "description": "Table not found",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
         }
       }
     },
-    "/": {
+    "/item": {
       "post": {
-        "tags": ["Root"],
-        "summary": "Root endpoint",
+        "tags": ["Item"],
+        "summary": "Add item",
+        "security": [{ "accessTokenCookie": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateItemDto" }
+            }
+          }
+        },
         "responses": {
-          "200": { "description": "Root response", "content": { "application/json": { "example": { "status": "success" } } } },
-          "500": { "description": "Internal server error", "content": { "application/json": { "example": { "status": "error", "message": "Internal server error" } } } }
+          "201": {
+            "description": "Item created",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Item" } } }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Item"],
+        "summary": "Edit item",
+        "security": [{ "accessTokenCookie": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/EditItemDto" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Item updated",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Item" } } }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "401": {
+              "description": "Unauthorized",
+              "content": {
+                "application/json": {
+                  "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+                  "example": {
+                    "status": "error",
+                    "message": "Unauthorized",
+                    "timestamp": "2025-09-30T21:09:14.374Z"
+                  }
+                }
+              }
+          },
+          "404": {
+              "description": "Item not found",
+              "content": {
+                "application/json": {
+                  "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+                  "example": {
+                    "status": "error",
+                    "message": "Item not found",
+                    "timestamp": "2025-09-30T21:09:14.374Z"
+                  }
+                }
+              }
+          }
+        }
+      }
+    },
+    "/item/{userId}": {
+      "get": {
+        "tags": ["Item"],
+        "summary": "Get all items",
+        "security": [{ "accessTokenCookie": [] }],
+        "responses": {
+          "200": {
+            "description": "List of items",
+            "content": { "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Item" } } } }
+          },
+          "401": {
+              "description": "Item not found",
+              "content": {
+                "application/json": {
+                  "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+                  "example": {
+                    "status": "error",
+                    "message": "Item not found",
+                    "timestamp": "2025-09-30T21:09:14.374Z"
+                  }
+                }
+              }
+          }
+        }
+      }
+    },
+    "/item/{id}": {
+      "delete": {
+        "tags": ["Item"],
+        "summary": "Delete item",
+        "security": [{ "accessTokenCookie": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "201": {
+            "description": "Item deleted",
+            "content": { "application/json": { "schema": { "type": "object", "properties": { "status": { "type": "string", "example": "success" } } } } }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "404": {
+            "description": "Item not found",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
         }
       }
     }
   }
-  
 }

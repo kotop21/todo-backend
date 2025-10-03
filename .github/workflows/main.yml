@@ -1,0 +1,24 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - test
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Start project
+        run: pnpm dev
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}
+          PORT: ${{ secrets.PORT }}
+          PRISMA_DISABLE_WARNINGS: "1"

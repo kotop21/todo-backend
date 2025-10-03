@@ -8,6 +8,6 @@ const itemRouter: Router = Router();
 itemRouter.post("/", authenticateToken, asyncHandler(item.addItemCon));
 itemRouter.delete("/:id", authenticateToken, asyncHandler(item.deleteItemCon))
 itemRouter.put("/", authenticateToken, asyncHandler(item.editItemCon));
-itemRouter.get("/", authenticateToken, asyncHandler(item.getItemsCon))
+itemRouter.get("/:id", authenticateToken, asyncHandler(item.getItemsCon))
 
 export default itemRouter;

@@ -8,6 +8,6 @@ const tableRouter: Router = Router();
 tableRouter.post("/", authenticateToken, asyncHandler(table.createTableCon));
 tableRouter.delete("/:id", authenticateToken, asyncHandler(table.deleteTableCon));
 tableRouter.put("/", authenticateToken, asyncHandler(table.editTableCon));
-tableRouter.get("/", authenticateToken, asyncHandler(table.getTablesCon));
+tableRouter.get("/:id", authenticateToken, asyncHandler(table.getTablesCon));
 
 export default tableRouter;
