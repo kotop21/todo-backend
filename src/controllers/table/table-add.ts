@@ -1,7 +1,6 @@
 import type { Request, Response } from 'express';
 import { addTable } from '../../service/table/add-table.js';
 import { CreateTableDto } from '../../schemas/table-schema.js';
-import { ZodError } from 'zod';
 
 export const createTableCon = async (req: Request, res: Response) => {
   const validData = CreateTableDto.parse(req.body);

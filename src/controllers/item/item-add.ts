@@ -1,7 +1,6 @@
 import type { Request, Response } from 'express';
 import { addItem } from '../../service/item/add-item.js';
 import { CreateItemDto } from '../../schemas/item-schema.js';
-import { ZodError } from 'zod';
 
 export const addItemCon = async (req: Request, res: Response) => {
   const validData = CreateItemDto.parse(req.body);
