@@ -31,8 +31,8 @@ export const authenticateToken = (req: Request, res: Response, next: NextFunctio
   const isDevToken = devToken && token === devToken;
   if (isDevToken) {
     req.user = {
-      userID: 0,
-      email: 'developer@example.com',
+      userID: 1,
+      email: 'testEmail@email.com',
       createdAt: new Date().toISOString(),
     };
     return next();

@@ -24,12 +24,10 @@ export const userGetTokenCon = async (req: Request, res: Response) => {
 
   const maxAgeRefresh = refreshToken.refreshTokenExpiresAt.getTime() - Date.now();
 
-  const isDev = process.argv.includes('-dev');
-
   res.cookie("refreshToken", refreshToken.refreshToken, {
     httpOnly: true,
-    secure: !isDev,
-    sameSite: isDev ? "none" : "strict",
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
     maxAge: maxAgeRefresh,
   });
 
@@ -43,10 +41,11 @@ export const userGetTokenCon = async (req: Request, res: Response) => {
 
   res.cookie("accessToken", accessToken.token, {
     httpOnly: true,
-    secure: !isDev,
-    sameSite: isDev ? "none" : "strict",
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
     maxAge: accessTokenMaxAge,
   });
+
 
   res.status(201).json({
     status: 'success',
@@ -54,4 +53,5 @@ export const userGetTokenCon = async (req: Request, res: Response) => {
     userID: search.id,
     timestamp: new Date(),
   });
+
 };
