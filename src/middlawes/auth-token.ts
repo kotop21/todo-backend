@@ -28,11 +28,10 @@ export const authenticateToken = (req: Request, res: Response, next: NextFunctio
     });
   }
 
-  const isDevToken = devToken && token === devToken;
-  if (isDevToken) {
+  if (devToken && token === devToken) {
     req.user = {
       userID: 1,
-      email: 'testEmail@email.com',
+      email: 'dev@example.com',
       createdAt: new Date().toISOString(),
     };
     return next();
@@ -51,6 +50,7 @@ export const authenticateToken = (req: Request, res: Response, next: NextFunctio
     req.user = payload;
     next();
   } catch (err) {
+    console.error('JWT verification error:', err);
     return res.status(401).json({
       status: 'error',
       message: 'Invalid or expired access token',
