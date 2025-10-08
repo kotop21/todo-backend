@@ -27,6 +27,7 @@ export const editTable = async (tableId: number, nameTable: string) => {
     });
 
     return {
+      tableId: updatedTable.id,
       name: updatedTable.name,
     };
   } catch (err: any) {
