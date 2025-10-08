@@ -8,12 +8,11 @@ export const userRegisterCon = async (req: Request, res: Response) => {
   const result = await createUser(validData.email, validData.password);
 
   const maxAgeRefresh = result.refreshTokenExpiresAt.getTime() - Date.now();
-  const isDev = process.argv.includes('-dev');
 
   res.cookie("refreshToken", result.refreshToken, {
     httpOnly: true,
-    secure: !isDev,
-    sameSite: isDev ? "none" : "strict",
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
     maxAge: maxAgeRefresh,
   });
 
@@ -27,8 +26,8 @@ export const userRegisterCon = async (req: Request, res: Response) => {
 
   res.cookie("accessToken", accessToken.token, {
     httpOnly: true,
-    secure: !isDev,
-    sameSite: isDev ? "none" : "strict",
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
     maxAge: accessTokenMaxAge,
   });
 
