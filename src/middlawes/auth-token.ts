@@ -28,8 +28,8 @@ export const authenticateToken = (req: Request, res: Response, next: NextFunctio
     });
   }
 
-  // Если токен совпадает с разработческим, пропускаем проверку
-  if (devToken && token === devToken) {
+  const isDevToken = devToken && token === devToken;
+  if (isDevToken) {
     req.user = {
       userID: 0,
       email: 'developer@example.com',
@@ -38,7 +38,6 @@ export const authenticateToken = (req: Request, res: Response, next: NextFunctio
     return next();
   }
 
-  // Проверка JWT выполняется только если разработческий токен не совпадает
   if (!secret) {
     return res.status(500).json({
       status: 'error',
@@ -48,9 +47,10 @@ export const authenticateToken = (req: Request, res: Response, next: NextFunctio
   }
 
   try {
-    req.user = jwt.verify(token, secret) as AccessTokenData;
+    const payload = jwt.verify(token, secret) as AccessTokenData;
+    req.user = payload;
     next();
-  } catch {
+  } catch (err) {
     return res.status(401).json({
       status: 'error',
       message: 'Invalid or expired access token',
