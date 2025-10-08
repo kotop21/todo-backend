@@ -1,5 +1,4 @@
 import type { Request, Response } from 'express';
-import { ZodError } from 'zod';
 import { getTableByUserId } from '../../service/table/get-tables.js';
 import { GetTableDto } from '../../schemas/table-schema.js';
 
@@ -11,6 +10,7 @@ export const getTablesCon = async (req: Request, res: Response) => {
   res.status(201).json({
     status: 'success',
     message: 'Tables retrieved successfully',
+    createAt: result.createdAt,
     count: result.length,
     timestamp: new Date(),
     result
