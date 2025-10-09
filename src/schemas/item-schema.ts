@@ -7,11 +7,10 @@ export const CreateItemDto = z.object({
   itemName: z
     .string({ message: "Invalid item name" })
     .min(1, { message: "Item name is required" })
-    .max(10, { message: "Item name must be at most 10 characters" })
-    .regex(/^[a-zA-Zа-яА-ЯёЁіІїЇєЄґҐ0-9_]+$/, {
-      message:
-        "Item name can only contain letters (Latin, Cyrillic), numbers, and underscores",
-    }),
+    .max(10, { message: "Item name must be at most 10 characters" }),
+  itemDescrip: z
+    .string({ message: "Invalid item descrip" })
+    .optional(),
 });
 
 export const DeleteItemDto = z.object({
@@ -33,11 +32,10 @@ export const EditItemDto = z.object({
   itemName: z
     .string({ message: "Invalid item name" })
     .min(1, { message: "Item name is required" })
-    .max(10, { message: "Item name must be at most 10 characters" })
-    .regex(/^[a-zA-Zа-яА-ЯёЁіІїЇєЄґҐ0-9_]+$/, {
-      message:
-        "Iable name can only contain letters (Latin, Cyrillic), numbers, and underscores",
-    }),
+    .max(10, { message: "Item name must be at most 10 characters" }),
+  itemDescrip: z
+    .string({ message: "Invalid item descrip" })
+    .optional(),
 });
 
 export type CreateItemDto = z.infer<typeof CreateItemDto>;

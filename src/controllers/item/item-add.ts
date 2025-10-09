@@ -14,12 +14,13 @@ export const addItemCon = async (req: Request, res: Response) => {
   }
 
   const result =
-    await addItem(validData.itemName, validData.tableId, userId);
+    await addItem(validData.itemName, validData.itemDescrip, validData.tableId, userId);
 
   res.status(201).json({
     status: 'success',
     message: 'Item created',
-    tableName: result.itemName,
+    itemDescript: result.itemDescript,
+    itemName: result.itemName,
     itemId: result.itemId,
     timestamp: new Date(),
   });

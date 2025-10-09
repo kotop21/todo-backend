@@ -5,7 +5,7 @@ import { EditItemDto } from '../../schemas/item-schema.js';
 export const editItemCon = async (req: Request, res: Response) => {
   const validData = EditItemDto.parse(req.body);
 
-  const result = await editItem(validData.itemId, validData.itemName);
+  const result = await editItem(validData.itemId, validData.itemDescrip, validData.itemName);
 
   res.status(201).json({
     status: 'success',

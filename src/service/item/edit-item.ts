@@ -1,6 +1,6 @@
 import { db } from "../index-database.js";
 
-export const editItem = async (itemId: number, itemName: string) => {
+export const editItem = async (itemId: number, itemDescrip: string | null, itemName: string) => {
   if (!itemId || !itemName) {
     const error: any = new Error("Item ID and item name are required.");
     error.statusCode = 400;
@@ -22,6 +22,7 @@ export const editItem = async (itemId: number, itemName: string) => {
         id: itemId,
       },
       data: {
+        itemDescrip: itemDescrip || null,
         itemName: itemName,
       },
     });

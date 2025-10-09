@@ -1,8 +1,13 @@
 import { db } from "../index-database.js";
 
-export const addItem = async (nameItem: string, tableId: number, userId: number) => {
+export const addItem = async (
+  nameItem: string,
+  itemDescrip: string | null,
+  tableId: number,
+  userId: number
+) => {
   if (!userId || !nameItem || !tableId) {
-    const error: any = new Error("User id and Item name and Table id is required");
+    const error: any = new Error("User id, Item name и Table id обязательны");
     error.statusCode = 400;
     throw error;
   }
@@ -21,6 +26,7 @@ export const addItem = async (nameItem: string, tableId: number, userId: number)
     const newItem = await db.tableItem.create({
       data: {
         itemName: nameItem,
+        itemDescrip: itemDescrip || null, // теперь можно не указывать
         table: {
           connect: { id: tableId },
         },
@@ -31,6 +37,7 @@ export const addItem = async (nameItem: string, tableId: number, userId: number)
     });
 
     return {
+      itemDescrip: newItem.itemDescrip,
       itemName: newItem.itemName,
       userId: newItem.userId,
       itemId: newItem.id,
@@ -40,8 +47,8 @@ export const addItem = async (nameItem: string, tableId: number, userId: number)
     if (err.statusCode) {
       throw err;
     }
-    const error: any = new Error("Не удалось создать itemed");
+    const error: any = new Error("Не удалось создать item");
     error.statusCode = 400;
     throw error;
-  };
+  }
 };
