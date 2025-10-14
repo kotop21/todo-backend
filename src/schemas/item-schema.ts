@@ -6,8 +6,7 @@ export const CreateItemDto = z.object({
     .min(1, { message: "Table id is required" }),
   itemName: z
     .string({ message: "Invalid item name" })
-    .min(1, { message: "Item name is required" })
-    .max(10, { message: "Item name must be at most 10 characters" }),
+    .min(1, { message: "Item name is required" }),
   itemDescrip: z
     .string({ message: "Invalid item descrip" })
     .optional(),
@@ -31,8 +30,7 @@ export const EditItemDto = z.object({
     .min(1, { message: "Item id is required" }),
   itemName: z
     .string({ message: "Invalid item name" })
-    .min(1, { message: "Item name is required" })
-    .max(10, { message: "Item name must be at most 10 characters" }),
+    .min(1, { message: "Item name is required" }),
   itemDescrip: z
     .string({ message: "Invalid item descrip" })
     .optional(),
