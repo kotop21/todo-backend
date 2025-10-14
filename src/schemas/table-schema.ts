@@ -4,7 +4,7 @@ export const CreateTableDto = z.object({
   tableName: z
     .string({ message: "Invalid table name" })
     .min(1, { message: "Table name is required" })
-    .max(10, { message: "Table name must be at most 10 characters" })
+    .max(20, { message: "Table name must be at most 10 characters" })
     .regex(/^[a-zA-Zа-яА-ЯёЁіІїЇєЄґҐ0-9_]+$/, {
       message:
         "Table name can only contain letters (Latin, Cyrillic), numbers, and underscores",
@@ -18,7 +18,7 @@ export const EditTableDto = z.object({
   tableName: z
     .string({ message: "Invalid table name" })
     .min(1, { message: "Table name is required" })
-    .max(10, { message: "Table name must be at most 10 characters" })
+    .max(20, { message: "Table name must be at most 10 characters" })
     .regex(/^[a-zA-Zа-яА-ЯёЁіІїЇєЄґҐ0-9_]+$/, {
       message:
         "Table name can only contain letters (Latin, Cyrillic), numbers, and underscores",
