@@ -16,5 +16,11 @@ export const LoginUserDto = z.object({
     .min(1, { message: "Password is required" })
 });
 
+export const LogoutUserDto = z.object({
+  accessToken: z.string().optional(),
+  refreshToken: z.string().min(1, "Refresh token is required")
+});
+
 export type RegisterUserDto = z.infer<typeof RegisterUserDto>;
 export type LoginUserDto = z.infer<typeof LoginUserDto>;
+export type LogoutUserDto = z.infer<typeof LogoutUserDto>;
