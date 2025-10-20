@@ -41,6 +41,16 @@ describe('Full user/item/table flow', () => {
     userId = loginRes.body.userID;
   });
 
+  it('should logout user', async () => {
+    const logoutRes = await request(app)
+      .post('/user/logout')
+      .send({ refreshToken: 'dummyRefreshToken', accessToken: '' });
+    expect(logoutRes.statusCode).toBe(200);
+    expect(logoutRes.body.status).toBe('success');
+    const setCookie = logoutRes.headers['set-cookie'];
+    cookies = Array.isArray(setCookie) ? setCookie : [setCookie];
+  });
+
   it('should create table', async () => {
     const res = await request(app)
       .post('/table')
