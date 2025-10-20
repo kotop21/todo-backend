@@ -1,9 +1,17 @@
 import { ZodError } from "zod";
 import type { Request, Response, NextFunction } from "express";
 
-// ANSI escape codes для красного цвета
 const red = "\x1b[31m";
+const gray = "\x1b[90m";
 const reset = "\x1b[0m";
+
+const getTimeStamp = () => {
+  const now = new Date();
+  const hours = String(now.getHours()).padStart(2, "0");
+  const minutes = String(now.getMinutes()).padStart(2, "0");
+  const seconds = String(now.getSeconds()).padStart(2, "0");
+  return `[${hours}:${minutes}:${seconds}]`;
+};
 
 export const errorHandler = (
   err: any,
@@ -11,13 +19,20 @@ export const errorHandler = (
   res: Response,
   next: NextFunction
 ) => {
+  const timestamp = `${gray}${getTimeStamp()}${reset}`;
+
   if (err instanceof ZodError) {
     console.error(
-      `${red}❌ Validation error:\n${reset} ${JSON.stringify(err.issues, null, 2)}`
+      `${timestamp} ${red}❌ Validation error:${reset} ${JSON.stringify(
+        err.issues,
+        null,
+        2
+      )}`
     );
   } else {
     console.error(
-      `${red}❌ Error:${reset} ${err.message} (status: ${err.statusCode || 500})`
+      `${timestamp} ${red}❌ Error:${reset} ${err.message} (status: ${err.statusCode || 500
+      })`
     );
   }
 
