@@ -1,7 +1,7 @@
-import type { Request, Response } from 'express';
-import { searchRefreshToken, searchUserById } from '../../service/user/database/user-search.js';
-import { updateRefreshToken } from '../../service/user/database/user-refresh-token.js';
-import { generateAccessToken } from '../../service/gen-access-token.js';
+import type { Request, Response } from "express";
+import { searchRefreshToken, searchUserById } from "../../service/user/database/user-search.js";
+import { updateRefreshToken, verifyRefreshToken } from "../../service/user/database/user-refresh-token.js";
+import { generateAccessToken } from "../../service/gen-access-token.js";
 
 export const userGetTokenCon = async (req: Request, res: Response) => {
   const userRefreshToken = req.cookies?.refreshToken;
@@ -18,11 +18,30 @@ export const userGetTokenCon = async (req: Request, res: Response) => {
     throw error;
   }
 
-  const search = await searchRefreshToken(userRefreshToken);
-  const refreshToken = await updateRefreshToken(search.id);
-  const result = await searchUserById(search.id);
+  const user = await searchRefreshToken(userRefreshToken);
+  if (!user) {
+    const error: any = new Error("Invalid refreshToken");
+    error.statusCode = 403;
+    throw error;
+  }
+
+  const isValid = verifyRefreshToken(userRefreshToken, user.refreshToken);
+  if (!isValid) {
+    const error: any = new Error("Refresh token verification failed");
+    error.statusCode = 403;
+    throw error;
+  }
+
+  const refreshToken = await updateRefreshToken(user.id);
+  const result = await searchUserById(user.id);
 
   const maxAgeRefresh = refreshToken.refreshTokenExpiresAt.getTime() - Date.now();
+  const accessToken = generateAccessToken({
+    userID: user.id,
+    email: result.email,
+    createdAt: result.regDate.toISOString(),
+  });
+  const accessTokenMaxAge = 15 * 60 * 1000;
 
   res.cookie("refreshToken", refreshToken.refreshToken, {
     httpOnly: true,
@@ -31,14 +50,6 @@ export const userGetTokenCon = async (req: Request, res: Response) => {
     maxAge: maxAgeRefresh,
   });
 
-  const accessToken = generateAccessToken({
-    userID: search.id,
-    email: result.email,
-    createdAt: result.regDate.toISOString(),
-  });
-
-  const accessTokenMaxAge = 15 * 60 * 1000;
-
   res.cookie("accessToken", accessToken.token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
@@ -46,12 +57,10 @@ export const userGetTokenCon = async (req: Request, res: Response) => {
     maxAge: accessTokenMaxAge,
   });
 
-
   res.status(201).json({
-    status: 'success',
+    status: "success",
     message: "Successful token creation",
-    userID: search.id,
+    userID: user.id,
     timestamp: new Date(),
   });
-
 };
