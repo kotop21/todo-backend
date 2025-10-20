@@ -17,7 +17,6 @@ export const LoginUserDto = z.object({
 });
 
 export const LogoutUserDto = z.object({
-  accessToken: z.string().optional(),
   refreshToken: z.string().min(1, "Refresh token is required")
 });
 

@@ -80,7 +80,8 @@ describe('Full user/item/table flow', () => {
   it('should logout user at the end', async () => {
     const logoutRes = await request(app)
       .post('/user/logout')
-      .send({ refreshToken: 'dummyRefreshToken', accessToken: '' });
+      .set('Cookie', authCookies);
+
     expect(logoutRes.statusCode).toBe(200);
     expect(logoutRes.body.status).toBe('success');
   });
