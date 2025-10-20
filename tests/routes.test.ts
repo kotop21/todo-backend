@@ -3,7 +3,7 @@ import { app } from '../src/app.js';
 import { db } from "../src/service/index-database.js";
 
 describe('Full user/item/table flow', () => {
-  let cookies: string[] = [];
+  let authCookies: string[] = [];
   let userId: number;
   let tableId: number;
   let itemId: number;
@@ -19,15 +19,13 @@ describe('Full user/item/table flow', () => {
     await db.$disconnect();
   });
 
-  it('should register user and login', async () => {
+  it('should register user', async () => {
     const regRes = await request(app)
       .post('/user/register')
       .send({ email: testEmail, password: testPassword });
     expect(regRes.statusCode).toBe(201);
     expect(regRes.body.status).toBe('success');
     userId = regRes.body.userID;
-    const setCookie = regRes.headers['set-cookie'];
-    cookies = Array.isArray(setCookie) ? setCookie : [setCookie];
   });
 
   it('should login user and get cookies', async () => {
@@ -36,25 +34,17 @@ describe('Full user/item/table flow', () => {
       .send({ email: testEmail, password: testPassword });
     expect(loginRes.statusCode).toBe(201);
     expect(loginRes.body.status).toBe('success');
-    const setCookie = loginRes.headers['set-cookie'];
-    cookies = Array.isArray(setCookie) ? setCookie : [setCookie];
-    userId = loginRes.body.userID;
-  });
 
-  it('should logout user', async () => {
-    const logoutRes = await request(app)
-      .post('/user/logout')
-      .send({ refreshToken: 'dummyRefreshToken', accessToken: '' });
-    expect(logoutRes.statusCode).toBe(200);
-    expect(logoutRes.body.status).toBe('success');
-    const setCookie = logoutRes.headers['set-cookie'];
-    cookies = Array.isArray(setCookie) ? setCookie : [setCookie];
+    // Сохраняем авторизационные cookies для всех следующих запросов
+    const setCookie = loginRes.headers['set-cookie'];
+    authCookies = Array.isArray(setCookie) ? setCookie : [setCookie];
+    userId = loginRes.body.userID;
   });
 
   it('should create table', async () => {
     const res = await request(app)
       .post('/table')
-      .set('Cookie', cookies)
+      .set('Cookie', authCookies)
       .send({ tableName: 'TestTable' });
     expect(res.statusCode).toBe(201);
     expect(res.body.status).toBe('success');
@@ -64,17 +54,17 @@ describe('Full user/item/table flow', () => {
   it('should create item', async () => {
     const res = await request(app)
       .post('/item')
-      .set('Cookie', cookies)
+      .set('Cookie', authCookies)
       .send({ itemName: 'TestItem', tableId });
     expect(res.statusCode).toBe(201);
     expect(res.body.status).toBe('success');
-    itemId = res.body.itemId
+    itemId = res.body.itemId;
   });
 
   it('should delete item', async () => {
     const res = await request(app)
       .delete(`/item/${itemId}`)
-      .set('Cookie', cookies);
+      .set('Cookie', authCookies);
     expect(res.statusCode).toBe(201);
     expect(res.body.status).toBe('success');
   });
@@ -82,9 +72,17 @@ describe('Full user/item/table flow', () => {
   it('should delete table', async () => {
     const res = await request(app)
       .delete(`/table/${tableId}`)
-      .set('Cookie', cookies);
+      .set('Cookie', authCookies);
     expect(res.statusCode).toBe(201);
     expect(res.body.status).toBe('success');
+  });
+
+  it('should logout user at the end', async () => {
+    const logoutRes = await request(app)
+      .post('/user/logout')
+      .send({ refreshToken: 'dummyRefreshToken', accessToken: '' });
+    expect(logoutRes.statusCode).toBe(200);
+    expect(logoutRes.body.status).toBe('success');
   });
 });
 
