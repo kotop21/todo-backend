@@ -105,10 +105,14 @@ export const searchRefreshToken = async (refreshTokenIn: string) => {
 
   try {
     const user = await db.user.findFirst({
-      where: {
-        refreshToken: hashedInput,
+      where: { refreshToken: hashedInput },
+      select: {
+        id: true,
+        email: true,
+        refreshToken: true,
+        refreshTokenExpiresAt: true,
+        regDate: true,
       },
-      select: { id: true },
     });
 
     if (!user) {
@@ -117,8 +121,7 @@ export const searchRefreshToken = async (refreshTokenIn: string) => {
       throw error;
     }
 
-    return { id: user.id };
-
+    return user;
   } catch (err: any) {
     console.error("Error search User by refresh token:", err);
     if (err.statusCode) {
@@ -128,4 +131,5 @@ export const searchRefreshToken = async (refreshTokenIn: string) => {
     error.statusCode = 500;
     throw error;
   }
-}
+};
+
